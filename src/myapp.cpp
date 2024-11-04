@@ -1,6 +1,6 @@
 #include "myapp.hpp"
 
-#include "myframe.hpp"
+#include "mainframe.hpp"
 
 bool MyApp::OnInit() {
     wxInitAllImageHandlers();
@@ -13,7 +13,7 @@ bool MyApp::OnInit() {
     //     std::cout << "Could not open icon file: " << icon_file << std::endl;
     // }
 
-    MyFrame *frame = new MyFrame();
+    MainFrame *frame = new MainFrame();
     frame->Show(true);
     
     return true;

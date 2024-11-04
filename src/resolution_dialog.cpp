@@ -1,6 +1,6 @@
 #include "resolution_dialog.hpp"
 
-#include "myframe.hpp" // for the IDs
+#include "mainframe.hpp" // for the IDs
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 

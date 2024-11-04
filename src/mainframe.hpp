@@ -1,5 +1,5 @@
-#ifndef MYFRAME_HPP
-#define MYFRAME_HPP
+#ifndef MAINFRAME_HPP
+#define MAINFRAME_HPP
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -8,10 +8,10 @@
 
 #include <memory>
 
-class MyFrame : public wxFrame {
+class MainFrame : public wxFrame {
     public:
-        MyFrame();
-        ~MyFrame();
+        MainFrame();
+        ~MainFrame();
     private:
         void OnAbout(wxCommandEvent& event);
         void OnFileLoad(wxCommandEvent& event);
@@ -20,10 +20,7 @@ class MyFrame : public wxFrame {
 
         void on_new_game(wxCommandEvent& event);
 
-        // std::unique_ptr<Image> _image;
         std::string _icon_file = "icon_foosball.jpeg";
-        int _input_type_int;
-        std::string _input_type_string;
 
         enum {
             ID_Hello = 1,
@@ -33,4 +30,4 @@ class MyFrame : public wxFrame {
         };
 };
 
-#endif // MYFRAME_HPP
+#endif // MAINFRAME_HPP

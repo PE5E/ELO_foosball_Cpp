@@ -9,7 +9,7 @@ include(${wxWidgets_USE_FILE})
 set(SRC_FILES
     main.cpp
     myapp.cpp
-    myframe.cpp
+    mainframe.cpp
     resolution_dialog.cpp
 )
 

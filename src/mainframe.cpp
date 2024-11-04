@@ -1,4 +1,4 @@
-#include "myframe.hpp"
+#include "mainframe.hpp"
 
 #include <wx/filedlg.h>
 #include <wx/grid.h>
@@ -11,17 +11,14 @@
 #include <string>
 
 
-MyFrame::MyFrame() 
-    : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
-    {
-    _input_type_int = 0;
-    _input_type_string = "";
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
+{
   
     // menu
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_EXIT);
     wxMenu *menuPlayers = new wxMenu;
-    menuPlayers->Append(ID_players, "&Players", "Open players screen");
+    menuPlayers->Append(ID_players, "&Edit Players", "Players stuff");
     wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_ABOUT);
 
@@ -31,8 +28,8 @@ MyFrame::MyFrame()
     menuBar->Append(menuHelp, "&Help");
     SetMenuBar(menuBar);
 
-    Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
-    Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
+    Bind(wxEVT_MENU, &MainFrame::OnAbout, this, wxID_ABOUT);
+    Bind(wxEVT_MENU, &MainFrame::OnExit, this, wxID_EXIT);
 
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
     sizer->AddSpacer(20);
@@ -60,7 +57,7 @@ MyFrame::MyFrame()
     sizer->SetSizeHints(this);
     SetSizer(sizer);
 
-    Bind(wxEVT_BUTTON, &MyFrame::on_new_game, this, ID_new_game);
+    Bind(wxEVT_BUTTON, &MainFrame::on_new_game, this, ID_new_game);
     
     // icon
     wxIcon mainicon;
@@ -71,22 +68,22 @@ MyFrame::MyFrame()
     wxWindow::SetSize(wxDefaultCoord, wxDefaultCoord, 800, 400, wxSIZE_AUTO);
 }
 
-MyFrame::~MyFrame(){}
+MainFrame::~MainFrame(){}
 
-void MyFrame::OnAbout(wxCommandEvent& event) {
+void MainFrame::OnAbout(wxCommandEvent& event) {
     wxMessageBox("Foosball ELO Rating program by Jaap",
                  "About ", wxOK | wxICON_INFORMATION);
 }
 
-void MyFrame::OnExit(wxCommandEvent& event) {
+void MainFrame::OnExit(wxCommandEvent& event) {
     Close(true);
 }
 
-void MyFrame::on_new_game(wxCommandEvent& event) {
+void MainFrame::on_new_game(wxCommandEvent& event) {
         wxMessageBox("Player:", "Enter game details", wxOK | wxICON_INFORMATION);
 }
 
-void MyFrame::OnFileLoad(wxCommandEvent& event) {
+void MainFrame::OnFileLoad(wxCommandEvent& event) {
     try {
         wxFileDialog *file_dialog = new wxFileDialog(this, "Open picture file", "", "", "", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
         // file_dialog->SetExtraControlCreator(&file_load_dialog);
