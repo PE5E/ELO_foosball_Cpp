@@ -15,7 +15,8 @@
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
-  
+    _last_game_2v2 = false;
+
     // menu
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_EXIT);
@@ -59,12 +60,9 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
     add_score_to_list("Jaap", "1000");
     add_score_to_list("Richie", "999");
 
-    // wxImagePanel *picture_org = new wxImagePanel( this, wxT("image2.jpg"), wxBITMAP_TYPE_JPEG);
-    // sizer->Add(picture_org, 1, wxEXPAND);
-
     sizer->AddSpacer(20);
     sizer->Add(new wxButton(this, ID_new_game, "New Game"), 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
-    sizer->AddSpacer(20);
+    sizer->AddSpacer(10);
     
     sizer->SetSizeHints(this);
     SetSizer(sizer);
@@ -91,20 +89,23 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MainFrame::on_new_game(wxCommandEvent& event) {
-    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"));
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2);
     game_diag->setBytes(1024);
 
     if(game_diag->ShowModal() == wxID_OK) {
-        int resH = std::stoi(game_diag->getResolutionH().ToStdString());
-        int resV = std::stoi(game_diag->getResolutionV().ToStdString());
-        std::cout << "Set image resolution to width: " << resV << " and height: " << resH << std::endl;
+        bool teams_2v2 = game_diag->getTeams2v2();
+
+        // int resH = std::stoi(game_diag->getResolutionH().ToStdString());
+        // int resV = std::stoi(game_diag->getResolutionV().ToStdString());
+        //sstd::cout << "Set image resolution to width: " << resV << " and height: " << resH << std::endl;
 
         // Image_type type = static_cast<Image_type>(game_diag->getBitDepth() + 1);
         // Image_channels channels = static_cast<Image_channels>(game_diag->getChannels());
         // int loaded_bytes = _image->open_file(file, type, resH, resV, channels);
+        _last_game_2v2 = teams_2v2;
     }
     else {
-        std::cout << "No resolution was set. Not loading the picture." << std::endl;
+        // std::cout << "No resolution was set. Not loading the picture." << std::endl;
     }
     delete game_diag;
 }

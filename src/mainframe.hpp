@@ -33,6 +33,8 @@ class MainFrame : public wxFrame {
         std::string _icon_file = "icon_foosball.jpeg";
 
         wxFlexGridSizer *score_grid;
+
+        bool _last_game_2v2;
 };
 
 #endif // MAINFRAME_HPP

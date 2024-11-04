@@ -6,28 +6,31 @@
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title);
+    NewGameDialog(const wxString& title, bool teams_2v2 = false);
     ~NewGameDialog();
-    wxString getResolutionH();
+    bool getTeams2v2();
     wxString getResolutionV();
     int getChannels();
     int getBitDepth();
     void setBytes(int nr_bytes);
 
 private:
-    void calculate_bpp(wxCommandEvent & event);
+    void set_players(wxCommandEvent & event);
 
 private:
-    wxTextCtrl *inputH;
-    wxTextCtrl *inputV;
-    wxStaticText *input_bytes_nr;
-    wxStaticText *bits_per_pixel;
-    wxRadioBox *team_box;
-    wxRadioBox *bits_box;
-    int _nr_bytes;
+    wxTextCtrl *_teamA;
+    wxTextCtrl *_teamB;
+    wxRadioBox *_team_box;
+    wxComboBox *_player1_box;
+    wxComboBox *_player2_box;
+    wxComboBox *_player3_box;
+    wxComboBox *_player4_box;
 
-    const int ID_TEXT1 = 1;
-    const int ID_TEXT2 = 2;
+
+    const int ID_TEAMS_BOX = 1;
+    const int ID_TEAM_A = 2;
+    const int ID_TEAM_B = 3;
+    bool _teams_2v2;
 
 };
 
