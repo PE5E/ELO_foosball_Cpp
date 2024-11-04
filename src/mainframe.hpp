@@ -7,11 +7,21 @@
 #endif
 
 #include <memory>
+#include <string>
 
 class MainFrame : public wxFrame {
+    enum {
+            ID_Hello = 1,
+            ID_file,
+            ID_new_game,
+            ID_players
+        };
+
     public:
         MainFrame();
         ~MainFrame();
+        void add_score_to_list(const std::string &name, const std::string score);
+
     private:
         void OnAbout(wxCommandEvent& event);
         void OnFileLoad(wxCommandEvent& event);
@@ -22,12 +32,7 @@ class MainFrame : public wxFrame {
 
         std::string _icon_file = "icon_foosball.jpeg";
 
-        enum {
-            ID_Hello = 1,
-            ID_file,
-            ID_new_game,
-            ID_players
-        };
+        wxFlexGridSizer *score_grid;
 };
 
 #endif // MAINFRAME_HPP

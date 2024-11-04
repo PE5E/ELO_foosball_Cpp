@@ -5,6 +5,8 @@
 #include <wx/window.h>
 #include <wx/radiobox.h>
 
+#include "new_game_dialog.hpp"
+
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -33,19 +35,29 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
     sizer->AddSpacer(20);
-    sizer->Add(new wxStaticText(this, wxID_ANY, "Player Ranking", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
+    wxStaticText *ranking = new wxStaticText(this, wxID_ANY, "Ranking", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
+    ranking->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+    sizer->Add(ranking, 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
     sizer->AddSpacer(20);
 
     // the table of players
-    wxFlexGridSizer *grid_sizer = new wxFlexGridSizer(2, 10, 3);
-    sizer->Add(grid_sizer, 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
+    score_grid = new wxFlexGridSizer(2, 10, 3);
+    sizer->Add(score_grid, 2, wxEXPAND | wxRIGHT | wxLEFT, 50);
 
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "Name", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "Score", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "Fastjack", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "1000", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "Richie", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    grid_sizer->Add(new wxStaticText(this, wxID_ANY, "999", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    wxStaticText * name = new wxStaticText(this, wxID_ANY, "Name", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
+    name->SetMinSize(wxSize(400, 25));
+    name->SetSize(400, 25);
+
+    wxStaticText * score = new wxStaticText(this, wxID_ANY, "Score", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
+    score->SetMinSize(wxSize(50, 25));
+    score->SetSize(50, 25);
+
+    score_grid->Add(name, 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    score_grid->Add(score, 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+
+    
+    add_score_to_list("Jaap", "1000");
+    add_score_to_list("Richie", "999");
 
     // wxImagePanel *picture_org = new wxImagePanel( this, wxT("image2.jpg"), wxBITMAP_TYPE_JPEG);
     // sizer->Add(picture_org, 1, wxEXPAND);
@@ -71,8 +83,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 MainFrame::~MainFrame(){}
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
-    wxMessageBox("Foosball ELO Rating program by Jaap",
-                 "About ", wxOK | wxICON_INFORMATION);
+    wxMessageBox("Foosball ELO Rating program by Jaap", "About ", wxOK | wxICON_INFORMATION);
 }
 
 void MainFrame::OnExit(wxCommandEvent& event) {
@@ -80,7 +91,22 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MainFrame::on_new_game(wxCommandEvent& event) {
-        wxMessageBox("Player:", "Enter game details", wxOK | wxICON_INFORMATION);
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"));
+    game_diag->setBytes(1024);
+
+    if(game_diag->ShowModal() == wxID_OK) {
+        int resH = std::stoi(game_diag->getResolutionH().ToStdString());
+        int resV = std::stoi(game_diag->getResolutionV().ToStdString());
+        std::cout << "Set image resolution to width: " << resV << " and height: " << resH << std::endl;
+
+        // Image_type type = static_cast<Image_type>(game_diag->getBitDepth() + 1);
+        // Image_channels channels = static_cast<Image_channels>(game_diag->getChannels());
+        // int loaded_bytes = _image->open_file(file, type, resH, resV, channels);
+    }
+    else {
+        std::cout << "No resolution was set. Not loading the picture." << std::endl;
+    }
+    delete game_diag;
 }
 
 void MainFrame::OnFileLoad(wxCommandEvent& event) {
@@ -139,4 +165,10 @@ void MainFrame::OnFileLoad(wxCommandEvent& event) {
     catch(std::exception ex) {
         std::cerr << "Error in file loading: " << ex.what() << std::endl;
     }
+}
+
+void MainFrame::add_score_to_list(const std::string &name, const std::string score)
+{
+    score_grid->Add(new wxStaticText(this, wxID_ANY, name, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    score_grid->Add(new wxStaticText(this, wxID_ANY, score, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
 }

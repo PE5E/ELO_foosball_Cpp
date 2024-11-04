@@ -10,7 +10,7 @@ set(SRC_FILES
     main.cpp
     myapp.cpp
     mainframe.cpp
-    resolution_dialog.cpp
+    new_game_dialog.cpp
 )
 
 if(WIN32)
