@@ -4,10 +4,18 @@
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
-NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const wxString player_names[], const uint player_ids[]) : 
+NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     _teams_2v2 = teams_2v2;
+    _player_names = player_names;
+    _player_ids = player_ids;
+
+    wxString player_names_wx[total_players];
+    for(int index = 0; index != total_players; index++)
+    {
+        player_names_wx[index] = player_names[index];
+    }
 
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
     
@@ -47,15 +55,15 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     wxPanel *panel2 = new wxPanel(this, -1);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
     
-    _player1_box = new wxComboBox(panel2, -1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player1");
-    _player3_box = new wxComboBox(panel2, -1, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player3");
+    _player1_box = new wxComboBox(panel2, ID_PLAYER_1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player1");
+    _player3_box = new wxComboBox(panel2, ID_PLAYER_3, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player3");
     _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamA->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
 
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
-    _player2_box = new wxComboBox(panel3, -1, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player2");
-    _player4_box = new wxComboBox(panel3, -1, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player4");
+    _player2_box = new wxComboBox(panel3, ID_PLAYER_2, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player2");
+    _player4_box = new wxComboBox(panel3, ID_PLAYER_4, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player4");
     _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamB->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
 
@@ -97,6 +105,10 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
     Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_a));
     Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_b));
+    Connect(ID_PLAYER_1, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_1));
+    Connect(ID_PLAYER_2, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_2));
+    Connect(ID_PLAYER_3, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_3));
+    Connect(ID_PLAYER_4, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_4));
 }
 
 NewGameDialog::~NewGameDialog() 
@@ -110,9 +122,28 @@ NewGameDialog::~NewGameDialog()
     delete _teamB;
 }
 
-bool NewGameDialog::getTeams2v2()
+bool NewGameDialog::get_teams_2v2()
 {
    return _teams_2v2;
+}
+std::pair<uint, const std::string> NewGameDialog::get_player1()
+{
+    return std::pair<uint, const std::string>{_player1_id, std::string(_player1_name)};
+}
+
+std::pair<uint, const std::string> NewGameDialog::get_player2()
+{
+    return std::pair<uint, const std::string>{_player2_id, std::string(_player2_name)};
+}
+
+std::pair<uint, const std::string> NewGameDialog::get_player3()
+{
+    return std::pair<uint, const std::string>{_player3_id, std::string(_player3_name)};
+}
+
+std::pair<uint, const std::string> NewGameDialog::get_player4()
+{
+    return std::pair<uint, const std::string>{_player4_id, std::string(_player4_name)};
 }
 
 void NewGameDialog::set_players(wxCommandEvent & event) 
@@ -150,4 +181,28 @@ void NewGameDialog::score_input_b(wxCommandEvent & event)
 
     _first_score = false;
     std::cout << "Team B: " << team_b << std::endl; 
+}
+
+void NewGameDialog::player_input_1(wxCommandEvent & event)
+{
+    _player1_id = _player_ids[_player1_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player1_name = _player_names[_player1_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+}
+
+void NewGameDialog::player_input_2(wxCommandEvent & event)
+{
+    _player2_id = _player_ids[_player2_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player2_name = _player_names[_player2_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+}
+
+void NewGameDialog::player_input_3(wxCommandEvent & event)
+{
+    _player3_id = _player_ids[_player3_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player3_name = _player_names[_player3_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+}
+
+void NewGameDialog::player_input_4(wxCommandEvent & event)
+{
+    _player4_id = _player_ids[_player4_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player4_name = _player_names[_player4_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
 }

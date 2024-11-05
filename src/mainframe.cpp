@@ -102,23 +102,36 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 void MainFrame::on_new_game(wxCommandEvent& event) {
     int player_count = _players.size() + 1; // add 1 for first entry
 
-    uint player_ids[player_count];
-    wxString player_names[player_count];
+    std::vector<uint> player_ids;
+    std::vector<wxString> player_names;
     
-    player_ids[0] = 0;
-    player_names[0] = "-";
+    player_ids.push_back(0);
+    player_names.push_back("-");
 
     for(int index = 0; index != _players.size(); index++)
     {
-        player_ids[index + 1] = _players.at(index).id;
-        player_names[index + 1] = _players.at(index).name;
+        player_ids.push_back(_players.at(index).id);
+        player_names.push_back(_players.at(index).name);
     }
 
+    // create and show dialog
     NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids);
 
     if(game_diag->ShowModal() == wxID_OK) {
-        bool teams_2v2 = game_diag->getTeams2v2();
+        bool teams_2v2 = game_diag->get_teams_2v2();
 
+        std::pair<uint, const std::string> player1 = game_diag->get_player1();
+        std::pair<uint, const std::string> player2 = game_diag->get_player2();
+        std::pair<uint, const std::string> player3 = game_diag->get_player3();
+        std::pair<uint, const std::string> player4 = game_diag->get_player4();
+        
+        
+        std::cout << "Selected players:" << std::endl;
+        std::cout << "1. id: " << player1.first << ", name: " << player1.second << std::endl;
+        std::cout << "2. id: " << player2.first << ", name: " << player2.second << std::endl;
+        std::cout << "3. id: " << player3.first << ", name: " << player3.second << std::endl;
+        std::cout << "4. id: " << player4.first << ", name: " << player4.second << std::endl;
+        
         _last_game_2v2 = teams_2v2;
     }
     else {

@@ -3,17 +3,28 @@
 
 #include <wx/wx.h>
 
+#include <utility>
+#include <vector>
+
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const wxString player_names[], const uint player_ids[]);
+    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids);
     ~NewGameDialog();
-    bool getTeams2v2();
+    bool get_teams_2v2();
+    std::pair<uint, const std::string> get_player1();
+    std::pair<uint, const std::string> get_player2();
+    std::pair<uint, const std::string> get_player3();
+    std::pair<uint, const std::string> get_player4();
 
 private:
     void set_players(wxCommandEvent & event);
     void score_input_a(wxCommandEvent & event);
     void score_input_b(wxCommandEvent & event);
+    void player_input_1(wxCommandEvent & event);
+    void player_input_2(wxCommandEvent & event);
+    void player_input_3(wxCommandEvent & event);
+    void player_input_4(wxCommandEvent & event);
 
 private:
     wxTextCtrl *_teamA;
@@ -24,13 +35,29 @@ private:
     wxComboBox *_player3_box;
     wxComboBox *_player4_box;
 
-
+    // wxWindowIDs
     const int ID_TEAMS_BOX = 1;
-    const int ID_TEAM_A = 2;
-    const int ID_TEAM_B = 3;
+    const int ID_TEAM_A    = 2;
+    const int ID_TEAM_B    = 3;
+    const int ID_PLAYER_1  = 4;
+    const int ID_PLAYER_2  = 5;
+    const int ID_PLAYER_3  = 6;
+    const int ID_PLAYER_4  = 7;
+
     bool _teams_2v2 = false;
     bool _first_score = true;
 
+    std::vector<uint> _player_ids;
+    std::vector<wxString> _player_names;
+
+    uint _player1_id = 0;
+    uint _player2_id = 0;
+    uint _player3_id = 0;
+    uint _player4_id = 0;
+    wxString _player1_name = "";
+    wxString _player2_name = "";
+    wxString _player3_name = "";
+    wxString _player4_name = "";
 };
 
 #endif // NEW_GAME_DIALOG_HPP
