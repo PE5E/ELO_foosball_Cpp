@@ -47,18 +47,18 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
     wxPanel *panel2 = new wxPanel(this, -1);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
     
-    wxString names[] = {"Jaap", "CC", "Richie", "Rick"};
-    int names_count = 4;
+    wxString names[] = {"-", "Jaap", "CC", "Richie", "Rick"};
+    int names_count = 5;
     _player1_box = new wxComboBox(panel2, -1, "Player 1", wxPoint(25, 30), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player1");
     _player3_box = new wxComboBox(panel2, -1, "Player 3", wxPoint(25, 80), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player3");
-    _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE);
+    _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamA->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
 
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
     _player2_box = new wxComboBox(panel3, -1, "Player 2", wxPoint(25, 30), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player2");
     _player4_box = new wxComboBox(panel3, -1, "Player 4", wxPoint(25, 80), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player4");
-    _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE);
+    _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamB->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
 
     if(!teams_2v2)
@@ -73,15 +73,6 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
 
     main_sizer->Add(team_sizer, 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
 
-
-    // wxString bit_depth[] = {"8 Bit", "12 Bit", "16 Bit"};
-    // int bit_count = 3;
-    // bits_box = new wxRadioBox(panel4, wxID_ANY, _T(""), wxPoint(30, 15), wxDefaultSize, bit_count,
-    //                         bit_depth, 1, wxRA_SPECIFY_COLS | wxNO_BORDER, wxDefaultValidator, _T("Bit Depth"));
-
-    // grid->Add(panel4);
-    // grid->Add(panel2);
-
     wxBoxSizer *hbox2 = new wxBoxSizer(wxHORIZONTAL);
     hbox2->Add(main_sizer); // add some space to the sides
 
@@ -90,8 +81,8 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
 
     // bindings
     Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
-    // Connect(ID_TEXT1, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::calculate_bpp));
-    // Connect(ID_TEXT2, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::calculate_bpp));
+    Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_inputs));
+    Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_inputs));
     
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     hbox->Add(okButton, 1, wxRIGHT, 10);
@@ -121,24 +112,6 @@ bool NewGameDialog::getTeams2v2()
    return _teams_2v2;
 }
 
-wxString NewGameDialog::getResolutionV()
-{
-   // return inputV->GetValue();
-}
-
-int NewGameDialog::getChannels() {
-    // return channel_box->GetSelection();
-}
-
-int NewGameDialog::getBitDepth() {
-    // return bits_box->GetSelection();
-}
-
-void NewGameDialog::setBytes(int nr_bytes) {
-    // _nr_bytes = nr_bytes;
-    // input_bytes_nr->SetLabelText(wxString::Format(wxT("%i"), nr_bytes));
-}
-
 void NewGameDialog::set_players(wxCommandEvent & event) 
 {
     _teams_2v2 = _team_box->GetSelection() == 1;
@@ -154,4 +127,19 @@ void NewGameDialog::set_players(wxCommandEvent & event)
         _player3_box->Hide();
         _player4_box->Hide();
     }
+}
+
+void NewGameDialog::score_inputs(wxCommandEvent & event)
+{
+    int team_a = 0;
+    int team_b = 0;
+
+    team_a = std::atoi(_teamA->GetLineText(0));
+    if(team_a > 10) _teamA->ChangeValue("0"); 
+
+
+    team_b = std::atoi(_teamB->GetLineText(0));
+    if(team_b > 10) _teamB->ChangeValue("0"); 
+
+    std::cout << "Team A: " << team_a << " Team B: " << team_b << std::endl; 
 }

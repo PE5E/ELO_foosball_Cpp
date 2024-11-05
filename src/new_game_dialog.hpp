@@ -9,13 +9,10 @@ public:
     NewGameDialog(const wxString& title, bool teams_2v2 = false);
     ~NewGameDialog();
     bool getTeams2v2();
-    wxString getResolutionV();
-    int getChannels();
-    int getBitDepth();
-    void setBytes(int nr_bytes);
 
 private:
     void set_players(wxCommandEvent & event);
+    void score_inputs(wxCommandEvent & event);
 
 private:
     wxTextCtrl *_teamA;

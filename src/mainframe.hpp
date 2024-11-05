@@ -24,9 +24,7 @@ class MainFrame : public wxFrame {
 
     private:
         void OnAbout(wxCommandEvent& event);
-        void OnFileLoad(wxCommandEvent& event);
         void OnExit(wxCommandEvent& event);
-        bool load_icon(const std::string &file);
 
         void on_new_game(wxCommandEvent& event);
 
@@ -35,6 +33,8 @@ class MainFrame : public wxFrame {
         wxFlexGridSizer *score_grid;
 
         bool _last_game_2v2;
+        int _main_width;
+        int _main_height;
 };
 
 #endif // MAINFRAME_HPP
