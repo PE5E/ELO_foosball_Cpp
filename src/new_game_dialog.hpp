@@ -6,7 +6,7 @@
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title, bool teams_2v2, const wxString player_names[], int total_players);
+    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const wxString player_names[], const uint player_ids[]);
     ~NewGameDialog();
     bool getTeams2v2();
 

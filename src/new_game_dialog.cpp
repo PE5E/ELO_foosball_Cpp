@@ -4,7 +4,7 @@
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
-NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const wxString player_names[], int total_players) : 
+NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const wxString player_names[], const uint player_ids[]) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     _teams_2v2 = teams_2v2;

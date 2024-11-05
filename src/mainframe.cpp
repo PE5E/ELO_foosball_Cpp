@@ -10,12 +10,22 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <string>
 
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
-   // menu
+    // players
+    player player1{1, "Jaap", 1000.0, 5};
+    player player2{2, "CC", 999.0, 5};
+    player player3{3, "Richie", 998.0, 5};
+    player player4{4, "Rick", 997.0, 5};
+    _players.push_back(player1);
+    _players.push_back(player2);
+    _players.push_back(player3);
+    _players.push_back(player4);
+
+
+    // menu
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_EXIT);
     wxMenu *menuPlayers = new wxMenu;
@@ -90,10 +100,21 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MainFrame::on_new_game(wxCommandEvent& event) {
-    wxString player_names[] = {"-", "Jaap", "CC", "Richie", "Rick"}; // the first entry must be: "-"
-    int names_count = 5;
+    int player_count = _players.size() + 1; // add 1 for first entry
 
-    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_names, names_count);
+    uint player_ids[player_count];
+    wxString player_names[player_count];
+    
+    player_ids[0] = 0;
+    player_names[0] = "-";
+
+    for(int index = 0; index != _players.size(); index++)
+    {
+        player_ids[index + 1] = _players.at(index).id;
+        player_names[index + 1] = _players.at(index).name;
+    }
+
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids);
 
     if(game_diag->ShowModal() == wxID_OK) {
         bool teams_2v2 = game_diag->getTeams2v2();
