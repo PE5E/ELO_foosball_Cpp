@@ -6,13 +6,14 @@
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title, bool teams_2v2 = false);
+    NewGameDialog(const wxString& title, bool teams_2v2, const wxString player_names[], int total_players);
     ~NewGameDialog();
     bool getTeams2v2();
 
 private:
     void set_players(wxCommandEvent & event);
-    void score_inputs(wxCommandEvent & event);
+    void score_input_a(wxCommandEvent & event);
+    void score_input_b(wxCommandEvent & event);
 
 private:
     wxTextCtrl *_teamA;
@@ -27,7 +28,8 @@ private:
     const int ID_TEAMS_BOX = 1;
     const int ID_TEAM_A = 2;
     const int ID_TEAM_B = 3;
-    bool _teams_2v2;
+    bool _teams_2v2 = false;
+    bool _first_score = true;
 
 };
 

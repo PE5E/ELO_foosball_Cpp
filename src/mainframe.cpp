@@ -15,11 +15,7 @@
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
-    _last_game_2v2 = false;
-    _main_width = 800;
-    _main_height = 400;
-
-    // menu
+   // menu
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(wxID_EXIT);
     wxMenu *menuPlayers = new wxMenu;
@@ -79,13 +75,11 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
         this->SetIcon(mainicon);
     }
 
-    wxWindow::SetSize(wxDefaultCoord, wxDefaultCoord, _main_width, _main_height, wxSIZE_AUTO);
+    wxWindow::SetSize(wxDefaultCoord, wxDefaultCoord, _main_width, _main_height, wxSIZE_FORCE);
 }
 
 MainFrame::~MainFrame()
-{
-    delete score_grid;
-}
+{}
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
     wxMessageBox("Foosball ELO Rating program by Jaap", "About ", wxOK | wxICON_INFORMATION);
@@ -96,7 +90,10 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MainFrame::on_new_game(wxCommandEvent& event) {
-    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2);
+    wxString player_names[] = {"-", "Jaap", "CC", "Richie", "Rick"}; // the first entry must be: "-"
+    int names_count = 5;
+
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_names, names_count);
 
     if(game_diag->ShowModal() == wxID_OK) {
         bool teams_2v2 = game_diag->getTeams2v2();

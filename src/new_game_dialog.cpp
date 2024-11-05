@@ -4,7 +4,7 @@
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
-NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) : 
+NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const wxString player_names[], int total_players) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     _teams_2v2 = teams_2v2;
@@ -47,19 +47,22 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
     wxPanel *panel2 = new wxPanel(this, -1);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
     
-    wxString names[] = {"-", "Jaap", "CC", "Richie", "Rick"};
-    int names_count = 5;
-    _player1_box = new wxComboBox(panel2, -1, "Player 1", wxPoint(25, 30), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player1");
-    _player3_box = new wxComboBox(panel2, -1, "Player 3", wxPoint(25, 80), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player3");
-    _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
+    _player1_box = new wxComboBox(panel2, -1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player1");
+    _player3_box = new wxComboBox(panel2, -1, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player3");
+    _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamA->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
 
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
-    _player2_box = new wxComboBox(panel3, -1, "Player 2", wxPoint(25, 30), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player2");
-    _player4_box = new wxComboBox(panel3, -1, "Player 4", wxPoint(25, 80), wxSize(260, 30), names_count, names, wxCB_READONLY, wxDefaultValidator, "player4");
-    _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT("0"), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
+    _player2_box = new wxComboBox(panel3, -1, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player2");
+    _player4_box = new wxComboBox(panel3, -1, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names, wxCB_READONLY, wxDefaultValidator, "player4");
+    _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
     _teamB->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+
+    _player1_box->SetSelection(0);
+    _player2_box->SetSelection(0);
+    _player3_box->SetSelection(0);
+    _player4_box->SetSelection(0);
 
     if(!teams_2v2)
     {
@@ -79,11 +82,6 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
     wxButton *okButton = new wxButton(this, wxID_OK, wxT("Ok"), wxDefaultPosition, wxSize(100, 30));
     wxButton *closeButton = new wxButton(this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxSize(100, 30));
 
-    // bindings
-    Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
-    Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_inputs));
-    Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_inputs));
-    
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
     hbox->Add(okButton, 1, wxRIGHT, 10);
     hbox->Add(closeButton, 1, wxLEFT, 10);
@@ -94,6 +92,11 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2) :
     
     SetSizer(vbox);
     Centre();
+
+    // bindings
+    Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
+    Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_a));
+    Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_b));
 }
 
 NewGameDialog::~NewGameDialog() 
@@ -129,17 +132,22 @@ void NewGameDialog::set_players(wxCommandEvent & event)
     }
 }
 
-void NewGameDialog::score_inputs(wxCommandEvent & event)
+void NewGameDialog::score_input_a(wxCommandEvent & event)
 {
-    int team_a = 0;
-    int team_b = 0;
+    int team_a = std::atoi(_teamA->GetLineText(0));
+    if(team_a > 10) _teamA->ChangeValue("0"); // do not allow score > 10
+    if(_first_score) _teamB->ChangeValue("10"); // set the score from other team to 10
 
-    team_a = std::atoi(_teamA->GetLineText(0));
-    if(team_a > 10) _teamA->ChangeValue("0"); 
+    _first_score = false;
+    std::cout << "Team A: " << team_a << std::endl; 
+}
 
+void NewGameDialog::score_input_b(wxCommandEvent & event)
+{
+    int team_b = std::atoi(_teamB->GetLineText(0));
+    if(team_b > 10) _teamB->ChangeValue("0"); // do not allow score > 10
+    if(_first_score) _teamA->ChangeValue("10"); // set the score from other team to 10
 
-    team_b = std::atoi(_teamB->GetLineText(0));
-    if(team_b > 10) _teamB->ChangeValue("0"); 
-
-    std::cout << "Team A: " << team_a << " Team B: " << team_b << std::endl; 
+    _first_score = false;
+    std::cout << "Team B: " << team_b << std::endl; 
 }

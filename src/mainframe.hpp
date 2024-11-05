@@ -32,9 +32,9 @@ class MainFrame : public wxFrame {
 
         wxFlexGridSizer *score_grid;
 
-        bool _last_game_2v2;
-        int _main_width;
-        int _main_height;
+        bool _last_game_2v2 = false;
+        int _main_width = 800;
+        int _main_height = 400;
 };
 
 #endif // MAINFRAME_HPP
