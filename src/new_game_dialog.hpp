@@ -20,17 +20,18 @@ public:
     uint get_score_b();
 
 private:
-    void set_players(wxCommandEvent & event);
-    void score_input_a(wxCommandEvent & event);
-    void score_input_b(wxCommandEvent & event);
-    void player_input_1(wxCommandEvent & event);
-    void player_input_2(wxCommandEvent & event);
-    void player_input_3(wxCommandEvent & event);
-    void player_input_4(wxCommandEvent & event);
+    void set_players(wxCommandEvent &event);
+    void score_input_a(wxCommandEvent &event);
+    void score_input_b(wxCommandEvent &event);
+    void player_input_1(wxCommandEvent &event);
+    void player_input_2(wxCommandEvent &event);
+    void player_input_3(wxCommandEvent &event);
+    void player_input_4(wxCommandEvent &event);
+    void keypad_score_a(wxCommandEvent &event);
 
 private:
-    wxTextCtrl *_teamA;
-    wxTextCtrl *_teamB;
+    wxComboBox *_teamA;
+    wxComboBox *_teamB;
     wxRadioBox *_team_box;
     wxComboBox *_player1_box;
     wxComboBox *_player2_box;
@@ -45,6 +46,8 @@ private:
     const int ID_PLAYER_2  = 5;
     const int ID_PLAYER_3  = 6;
     const int ID_PLAYER_4  = 7;
+    const int ID_BUTTON_A = 8;
+    const int ID_BUTTON_B = 9;
 
     bool _teams_2v2 = false;
     bool _first_score = true;

@@ -4,12 +4,19 @@
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
+using std::cout;
+using std::cerr;
+using std::endl;
+
 NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     _teams_2v2 = teams_2v2;
     _player_names = player_names;
     _player_ids = player_ids;
+
+    const int max_score = 10;
+    const wxString numbers[11] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
     wxString player_names_wx[total_players];
     for(int index = 0; index != total_players; index++)
@@ -19,22 +26,6 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
 
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
     
-    /*
-    wxPanel *panel1 = new wxPanel(this, -1);
-    wxStaticBox *st1 = new wxStaticBox(panel1, -1, wxT("Resolution"), wxPoint(5, 5), wxSize(230, 120));
-    wxStaticText *textH = new wxStaticText(panel1, wxID_ANY, "Horizontal:", wxPoint(15, 35));
-    inputH = new wxTextCtrl(panel1, ID_TEXT1, wxT("0"), wxPoint(110, 35));
-    wxStaticText *textV = new wxStaticText(panel1, wxID_ANY, "Vertical:", wxPoint(15, 75));
-    inputV = new wxTextCtrl(panel1, ID_TEXT2, wxT("0"), wxPoint(110, 75));
-
-    wxPanel *panel2 = new wxPanel(this, -1);
-    wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Bitsize"), wxPoint(5, 5), wxSize(230, 100));
-    wxStaticText *input_bytes = new wxStaticText(panel2, wxID_ANY, "Total bytes:", wxPoint(15, 30));
-    input_bytes_nr = new wxStaticText(panel2, wxID_ANY, "0", wxPoint(110, 30));
-    wxStaticText *bytespp = new wxStaticText(panel2, wxID_ANY, "Bits per pixel:", wxPoint(15, 65));
-    bits_per_pixel = new wxStaticText(panel2, wxID_ANY, "0", wxPoint(110, 65));
-    */
-
     wxPanel *panel1 = new wxPanel(this, -1);
     wxString teams[] = {"1 vs 1", "2 vs 2"};
     int team_count = 2;
@@ -51,21 +42,23 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
 
     main_sizer->Add(panel1, 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
 
-
     wxPanel *panel2 = new wxPanel(this, -1);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
     
     _player1_box = new wxComboBox(panel2, ID_PLAYER_1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player1");
     _player3_box = new wxComboBox(panel2, ID_PLAYER_3, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player3");
-    _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
-    _teamA->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+    // _teamA = new wxTextCtrl(panel2, ID_TEAM_A, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
+    // _teamA->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+    _teamA = new wxComboBox(panel2, ID_TEAM_A, "Score Team A", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team A");
 
+    
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
     _player2_box = new wxComboBox(panel3, ID_PLAYER_2, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player2");
     _player4_box = new wxComboBox(panel3, ID_PLAYER_4, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player4");
-    _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
-    _teamB->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+    // _teamB = new wxTextCtrl(panel3, ID_TEAM_B, wxT(""), wxPoint(115, 150), wxSize(80, 40), wxTE_CENTRE, wxTextValidator(wxFILTER_DIGITS));
+    // _teamB->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
+    _teamB = new wxComboBox(panel3, ID_TEAM_B, "Score Team B", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team B");
 
     _player1_box->SetSelection(0);
     _player2_box->SetSelection(0);
@@ -103,8 +96,8 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
 
     // bindings
     Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
-    Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_a));
-    Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_b));
+    Connect(ID_TEAM_A, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::score_input_a));
+    Connect(ID_TEAM_B, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::score_input_b));
     Connect(ID_PLAYER_1, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_1));
     Connect(ID_PLAYER_2, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_2));
     Connect(ID_PLAYER_3, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_3));
@@ -175,51 +168,30 @@ void NewGameDialog::set_players(wxCommandEvent &event)
 
 void NewGameDialog::score_input_a(wxCommandEvent &event)
 {
-
-    int team_a = std::atoi(_teamA->GetLineText(0));
+    _score_a = _teamA->GetSelection();
     
-    if(team_a > 10) 
+    if(_first_score && _score_a != 10) 
     {
-         _teamA->ChangeValue("0"); // do not allow score > 10
-         _score_a = 0;
-    }
-    else 
-    {
-        _score_a = team_a;
-    }
-
-    if(_first_score) 
-    {
-        _teamB->ChangeValue("10"); // set the score from other team to 10
+        _teamB->SetSelection(10); // set the score from other team to 10
         _score_b = 10;
     }
 
     _first_score = false;
-    std::cout << "Team A: " << team_a << std::endl; 
+    std::cout << "Team A: " << _score_a << std::endl; 
 }
 
 void NewGameDialog::score_input_b(wxCommandEvent &event)
 {
-    int team_b = std::atoi(_teamB->GetLineText(0));
+    _score_b = _teamB->GetSelection();
     
-    if(team_b > 10) 
+    if(_first_score && _score_b != 10) 
     {
-        _teamB->ChangeValue("0"); // do not allow score > 10
-        _score_b = 0;
-    }
-    else 
-    {
-        _score_b = team_b;
-    }
-
-    if(_first_score) 
-    {
-        _teamA->ChangeValue("10"); // set the score from other team to 10
+        _teamA->SetSelection(10); // set the score from other team to 10
         _score_a = 10;
     }
 
     _first_score = false;
-    std::cout << "Team B: " << team_b << std::endl; 
+    std::cout << "Team B: " << _score_b << std::endl; 
 }
 
 void NewGameDialog::player_input_1(wxCommandEvent &event)
