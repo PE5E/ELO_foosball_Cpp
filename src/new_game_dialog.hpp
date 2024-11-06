@@ -16,6 +16,8 @@ public:
     std::pair<uint, const std::string> get_player2();
     std::pair<uint, const std::string> get_player3();
     std::pair<uint, const std::string> get_player4();
+    uint get_score_a();
+    uint get_score_b();
 
 private:
     void set_players(wxCommandEvent & event);
@@ -46,6 +48,8 @@ private:
 
     bool _teams_2v2 = false;
     bool _first_score = true;
+    uint _score_a = 0;
+    uint _score_b = 0;
 
     std::vector<uint> _player_ids;
     std::vector<wxString> _player_names;

@@ -10,7 +10,10 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
+using std::cout;
+using std::endl;
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
@@ -125,12 +128,16 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         std::pair<uint, const std::string> player3 = game_diag->get_player3();
         std::pair<uint, const std::string> player4 = game_diag->get_player4();
         
-        
-        std::cout << "Selected players:" << std::endl;
-        std::cout << "1. id: " << player1.first << ", name: " << player1.second << std::endl;
-        std::cout << "2. id: " << player2.first << ", name: " << player2.second << std::endl;
-        std::cout << "3. id: " << player3.first << ", name: " << player3.second << std::endl;
-        std::cout << "4. id: " << player4.first << ", name: " << player4.second << std::endl;
+        cout << "Game results:" << endl;
+        cout << "Game type: " << (teams_2v2 ? "2 vs 2" : "1 vs 1") << endl;
+        cout << "Selected players:" << endl;
+        cout << "1. id: " << player1.first << ", name: " << player1.second << endl;
+        cout << "2. id: " << player2.first << ", name: " << player2.second << endl;
+        cout << "3. id: " << player3.first << ", name: " << player3.second << endl;
+        cout << "4. id: " << player4.first << ", name: " << player4.second << endl;
+        cout << "Score Team A: " << game_diag->get_score_a() << endl;
+        cout << "Score Team B: " << game_diag->get_score_b() << endl;
+
         
         _last_game_2v2 = teams_2v2;
     }

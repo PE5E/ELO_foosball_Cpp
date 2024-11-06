@@ -105,10 +105,10 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
     Connect(ID_TEAM_A, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_a));
     Connect(ID_TEAM_B, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(NewGameDialog::score_input_b));
-    Connect(ID_PLAYER_1, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_1));
-    Connect(ID_PLAYER_2, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_2));
-    Connect(ID_PLAYER_3, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_3));
-    Connect(ID_PLAYER_4, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::player_input_4));
+    Connect(ID_PLAYER_1, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_1));
+    Connect(ID_PLAYER_2, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_2));
+    Connect(ID_PLAYER_3, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_3));
+    Connect(ID_PLAYER_4, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::player_input_4));
 }
 
 NewGameDialog::~NewGameDialog() 
@@ -146,7 +146,17 @@ std::pair<uint, const std::string> NewGameDialog::get_player4()
     return std::pair<uint, const std::string>{_player4_id, std::string(_player4_name)};
 }
 
-void NewGameDialog::set_players(wxCommandEvent & event) 
+uint NewGameDialog::get_score_a()
+{
+    return _score_a;
+}
+
+uint NewGameDialog::get_score_b()
+{
+    return _score_b;
+}
+
+void NewGameDialog::set_players(wxCommandEvent &event) 
 {
     _teams_2v2 = _team_box->GetSelection() == 1;
     std::cout << "Teams: " << (_teams_2v2 ? "2v2" : "1v1") << std::endl;
@@ -163,46 +173,77 @@ void NewGameDialog::set_players(wxCommandEvent & event)
     }
 }
 
-void NewGameDialog::score_input_a(wxCommandEvent & event)
+void NewGameDialog::score_input_a(wxCommandEvent &event)
 {
+
     int team_a = std::atoi(_teamA->GetLineText(0));
-    if(team_a > 10) _teamA->ChangeValue("0"); // do not allow score > 10
-    if(_first_score) _teamB->ChangeValue("10"); // set the score from other team to 10
+    
+    if(team_a > 10) 
+    {
+         _teamA->ChangeValue("0"); // do not allow score > 10
+         _score_a = 0;
+    }
+    else 
+    {
+        _score_a = team_a;
+    }
+
+    if(_first_score) 
+    {
+        _teamB->ChangeValue("10"); // set the score from other team to 10
+        _score_b = 10;
+    }
 
     _first_score = false;
     std::cout << "Team A: " << team_a << std::endl; 
 }
 
-void NewGameDialog::score_input_b(wxCommandEvent & event)
+void NewGameDialog::score_input_b(wxCommandEvent &event)
 {
     int team_b = std::atoi(_teamB->GetLineText(0));
-    if(team_b > 10) _teamB->ChangeValue("0"); // do not allow score > 10
-    if(_first_score) _teamA->ChangeValue("10"); // set the score from other team to 10
+    
+    if(team_b > 10) 
+    {
+        _teamB->ChangeValue("0"); // do not allow score > 10
+        _score_b = 0;
+    }
+    else 
+    {
+        _score_b = team_b;
+    }
+
+    if(_first_score) 
+    {
+        _teamA->ChangeValue("10"); // set the score from other team to 10
+        _score_a = 10;
+    }
 
     _first_score = false;
     std::cout << "Team B: " << team_b << std::endl; 
 }
 
-void NewGameDialog::player_input_1(wxCommandEvent & event)
+void NewGameDialog::player_input_1(wxCommandEvent &event)
 {
-    _player1_id = _player_ids[_player1_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
-    _player1_name = _player_names[_player1_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    std::cerr << "player_input_1: _player1_box->GetSelection(): ";
+    std::cerr << _player1_box->GetSelection() << std::endl;
+    _player1_id = _player_ids[_player1_box->GetSelection()];
+    _player1_name = _player_names[_player1_box->GetSelection()];
 }
 
-void NewGameDialog::player_input_2(wxCommandEvent & event)
+void NewGameDialog::player_input_2(wxCommandEvent &event)
 {
-    _player2_id = _player_ids[_player2_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
-    _player2_name = _player_names[_player2_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player2_id = _player_ids[_player2_box->GetSelection()];
+    _player2_name = _player_names[_player2_box->GetSelection()];
 }
 
-void NewGameDialog::player_input_3(wxCommandEvent & event)
+void NewGameDialog::player_input_3(wxCommandEvent &event)
 {
-    _player3_id = _player_ids[_player3_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
-    _player3_name = _player_names[_player3_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player3_id = _player_ids[_player3_box->GetSelection()];
+    _player3_name = _player_names[_player3_box->GetSelection()];
 }
 
-void NewGameDialog::player_input_4(wxCommandEvent & event)
+void NewGameDialog::player_input_4(wxCommandEvent &event)
 {
-    _player4_id = _player_ids[_player4_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
-    _player4_name = _player_names[_player4_box->GetSelection() - 1]; // -1 for the added non existing player in first entry
+    _player4_id = _player_ids[_player4_box->GetSelection()];
+    _player4_name = _player_names[_player4_box->GetSelection()];
 }
