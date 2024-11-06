@@ -118,7 +118,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
     }
 
     // create and show dialog
-    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids);
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids, _last_players);
 
     if(game_diag->ShowModal() == wxID_OK) {
         bool teams_2v2 = game_diag->get_teams_2v2();
@@ -140,10 +140,12 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
         
         _last_game_2v2 = teams_2v2;
+        _last_players[0] = player1.first;
+        _last_players[1] = player2.first;
+        _last_players[2] = player3.first;
+        _last_players[3] = player4.first;
     }
-    else {
-        // std::cout << "No resolution was set. Not loading the picture." << std::endl;
-    }
+
     delete game_diag;
 }
 

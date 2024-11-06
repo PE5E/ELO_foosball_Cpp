@@ -42,9 +42,13 @@ class MainFrame : public wxFrame {
 
         wxFlexGridSizer *score_grid;
 
-        bool _last_game_2v2 = false;
         int _main_width = 800;
         int _main_height = 400;
+
+        // last game settings
+        bool _last_game_2v2 = false;
+        uint _last_players[4] = {0};
+
 
         std::vector<player> _players; // info from all players
 };

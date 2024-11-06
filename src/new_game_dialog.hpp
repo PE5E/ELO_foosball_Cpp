@@ -9,10 +9,10 @@
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids);
+    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids, const uint last_player_ids[4] = {0});
     ~NewGameDialog();
     bool get_teams_2v2();
-    std::pair<uint, const std::string> get_player1();
+    std::pair<uint, const std::string> get_player1(); // returns player ID, name
     std::pair<uint, const std::string> get_player2();
     std::pair<uint, const std::string> get_player3();
     std::pair<uint, const std::string> get_player4();
@@ -46,8 +46,6 @@ private:
     const int ID_PLAYER_2  = 5;
     const int ID_PLAYER_3  = 6;
     const int ID_PLAYER_4  = 7;
-    const int ID_BUTTON_A = 8;
-    const int ID_BUTTON_B = 9;
 
     bool _teams_2v2 = false;
     bool _first_score = true;
