@@ -127,23 +127,58 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         std::pair<uint, const std::string> player2 = game_diag->get_player2();
         std::pair<uint, const std::string> player3 = game_diag->get_player3();
         std::pair<uint, const std::string> player4 = game_diag->get_player4();
+
+        uint player1_id = player1.first;
+        uint player2_id = player2.first;
+        uint player3_id = player3.first;
+        uint player4_id = player4.first;
         
         cout << "Game results:" << endl;
         cout << "Game type: " << (teams_2v2 ? "2 vs 2" : "1 vs 1") << endl;
         cout << "Selected players:" << endl;
-        cout << "1. id: " << player1.first << ", name: " << player1.second << endl;
-        cout << "2. id: " << player2.first << ", name: " << player2.second << endl;
-        cout << "3. id: " << player3.first << ", name: " << player3.second << endl;
-        cout << "4. id: " << player4.first << ", name: " << player4.second << endl;
+        cout << "1. id: " << player1_id << ", name: " << player1.second << endl;
+        cout << "2. id: " << player2_id << ", name: " << player2.second << endl;
+        cout << "3. id: " << player3_id << ", name: " << player3.second << endl;
+        cout << "4. id: " << player4_id << ", name: " << player4.second << endl;
         cout << "Score Team A: " << game_diag->get_score_a() << endl;
         cout << "Score Team B: " << game_diag->get_score_b() << endl;
 
+        // check players
+        if(player1_id == 0 || player2_id == 0) 
+        {
+            wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select all players", wxT("Error"), wxOK | wxICON_ERROR);
+            msg->ShowModal();
+            return;
+        }
+
+        if(teams_2v2) 
+        {
+            if(player3_id == 0 || player4_id == 0) 
+            {
+                wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select all players", wxT("Error"), wxOK | wxICON_ERROR);
+                msg->ShowModal();
+                return;
+            }
+        }
+        else 
+        {
+
+            if(player1_id == player2_id) 
+            {
+                wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select different players", wxT("Error"), wxOK | wxICON_ERROR);
+                msg->ShowModal();
+                return;
+            }
+        }
+
+        // check results
+
         
         _last_game_2v2 = teams_2v2;
-        _last_players[0] = player1.first;
-        _last_players[1] = player2.first;
-        _last_players[2] = player3.first;
-        _last_players[3] = player4.first;
+        _last_players[0] = player1_id;
+        _last_players[1] = player2_id;
+        _last_players[2] = player3_id;
+        _last_players[3] = player4_id;
     }
 
     delete game_diag;
