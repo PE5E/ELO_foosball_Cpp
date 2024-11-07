@@ -62,13 +62,14 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     _player1_box = new wxComboBox(panel2, ID_PLAYER_1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player1");
     _player3_box = new wxComboBox(panel2, ID_PLAYER_3, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player3");
     _teamA = new wxComboBox(panel2, ID_TEAM_A, "Score Team A", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team A");
-
+    _teamA->SetSelection(0);
     
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
     _player2_box = new wxComboBox(panel3, ID_PLAYER_2, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player2");
     _player4_box = new wxComboBox(panel3, ID_PLAYER_4, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player4");
     _teamB = new wxComboBox(panel3, ID_TEAM_B, "Score Team B", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team B");
+    _teamB->SetSelection(0);
 
     _player1_box->SetSelection(last_player_idx_1);
     _player2_box->SetSelection(last_player_idx_2);

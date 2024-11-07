@@ -7,11 +7,11 @@ include(${wxWidgets_USE_FILE})
 
 # Define a variable containing a list of source files for the project
 set(SRC_FILES
-    keypad_dialog.cpp
     main.cpp
     myapp.cpp
     mainframe.cpp
     new_game_dialog.cpp
+    score_dialog.cpp
 )
 
 if(WIN32)

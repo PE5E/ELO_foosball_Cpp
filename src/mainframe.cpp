@@ -6,11 +6,13 @@
 #include <wx/radiobox.h>
 
 #include "new_game_dialog.hpp"
+#include "score_dialog.hpp"
 
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 using std::cout;
 using std::endl;
@@ -82,12 +84,6 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 
     Bind(wxEVT_BUTTON, &MainFrame::on_new_game, this, ID_new_game);
     
-    // icon
-    wxIcon mainicon;
-    if(mainicon.LoadFile(_icon_file)) {
-        this->SetIcon(mainicon);
-    }
-
     wxWindow::SetSize(wxDefaultCoord, wxDefaultCoord, _main_width, _main_height, wxSIZE_FORCE);
 }
 
@@ -132,6 +128,8 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         uint player2_id = player2.first;
         uint player3_id = player3.first;
         uint player4_id = player4.first;
+        uint score_team_a = game_diag->get_score_a();
+        uint score_team_b = game_diag->get_score_b();
         
         cout << "Game results:" << endl;
         cout << "Game type: " << (teams_2v2 ? "2 vs 2" : "1 vs 1") << endl;
@@ -140,8 +138,8 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         cout << "2. id: " << player2_id << ", name: " << player2.second << endl;
         cout << "3. id: " << player3_id << ", name: " << player3.second << endl;
         cout << "4. id: " << player4_id << ", name: " << player4.second << endl;
-        cout << "Score Team A: " << game_diag->get_score_a() << endl;
-        cout << "Score Team B: " << game_diag->get_score_b() << endl;
+        cout << "Score Team A: " << score_team_a << endl;
+        cout << "Score Team B: " << score_team_b << endl;
 
         // save last game details
         _last_game_2v2 = teams_2v2;
@@ -149,6 +147,9 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         _last_players[1] = player2_id;
         _last_players[2] = player3_id;
         _last_players[3] = player4_id;
+
+        std::vector<std::string> player_names = {player1.second, player2.second, player3.second, player4.second};
+
 
         // check players
         if(player1_id == 0 || player2_id == 0) // there need to be players
@@ -189,13 +190,63 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
                 return;
             }
         }
-        else 
-        {
-
-        }
 
         // check results
+        if(score_team_a == 0 && score_team_b == 0)
+        {
+            wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select the scores", wxT("Error"), wxOK | wxICON_ERROR);
+            msg->ShowModal();
+            delete msg;
+            delete game_diag;
+            return;
+        }
 
+        if(score_team_a == score_team_b)
+        {
+            wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select different scores per team", wxT("Error"), wxOK | wxICON_ERROR);
+            msg->ShowModal();
+            delete msg;
+            delete game_diag;
+            return;
+        }
+
+        if(score_team_a > _max_score || score_team_b > _max_score)
+        {
+            std::string txt = "Please select a score lower than ";
+            txt += std::to_string(_max_score);
+
+            wxMessageDialog *msg = new wxMessageDialog(NULL, txt, wxT("Error"), wxOK | wxICON_ERROR);
+            msg->ShowModal();
+            delete msg;
+            delete game_diag;
+            return;
+        }
+
+        if(_only_max_score_game) // if true, only a score from one team that is equal to max score is accepted
+        {
+            if(score_team_a != _max_score && score_team_b != _max_score)
+            {
+                std::string txt = "Please select one score equal to ";
+                txt += std::to_string(_max_score);
+
+                wxMessageDialog *msg = new wxMessageDialog(NULL, txt, wxT("Error"), wxOK | wxICON_ERROR);
+                msg->ShowModal();
+                delete msg;
+                delete game_diag;
+                return;
+            }
+        }
+
+        // there should be valid results here
+
+        // calculate the new ELO ratings
+        // calculate difference in ELO ratings per player
+        // save the results
+        // show the results
+
+        ScoreDialog *score_diag = new ScoreDialog(wxT("Game Results"), _last_game_2v2, player_names, std::to_string(score_team_a), std::to_string(score_team_b), (score_team_a > score_team_b));
+        score_diag->ShowModal();
+        delete score_diag;
 
 
     }

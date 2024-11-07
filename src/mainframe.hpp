@@ -38,12 +38,12 @@ class MainFrame : public wxFrame {
 
         void on_new_game(wxCommandEvent& event);
 
-        std::string _icon_file = "icon_foosball.jpeg";
-
         wxFlexGridSizer *score_grid;
 
         int _main_width = 800;
         int _main_height = 400;
+        uint _max_score = 10;
+        bool _only_max_score_game = true; // if set to true, only a score from one team that is equal to max score is accepted
 
         // last game settings
         bool _last_game_2v2 = false;
