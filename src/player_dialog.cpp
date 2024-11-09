@@ -1,6 +1,6 @@
 #include "player_dialog.hpp"
 
-#include "scrollable_player_info.hpp"
+#include "scrollable_player_info_edit.hpp"
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
@@ -15,8 +15,7 @@ PlayerDialog::PlayerDialog(const wxString& title, const std::vector<Player> &pla
 
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-
-    ScrollablePlayerInfo* player_list = new ScrollablePlayerInfo(this, wxID_ANY, _players);
+    ScrollablePlayerInfoEdit* player_list = new ScrollablePlayerInfoEdit(this, wxID_ANY, _players);
     main_sizer->Add(player_list, 1, wxEXPAND);
 
     /*

@@ -24,7 +24,7 @@ class MainFrame : public wxFrame {
     public:
         MainFrame();
         ~MainFrame();
-        void add_score_to_list(const std::string &name, const std::string score);
+        void add_player_to_list(const std::string &name);
 
     private:
         void OnAbout(wxCommandEvent& event);
@@ -43,6 +43,9 @@ class MainFrame : public wxFrame {
         // last game settings
         bool _last_game_2v2 = false;
         uint _last_players[4] = {0};
+
+        double _starting_rate = 1000.0;
+        uint _highest_player_id = 1;
 
 
         std::vector<Player> _players; // info from all players

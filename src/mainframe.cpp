@@ -10,6 +10,7 @@
 #include "new_game_dialog.hpp"
 #include "player_dialog.hpp"
 #include "score_dialog.hpp"
+#include "scrollable_player_info.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -24,15 +25,22 @@ using std::endl;
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
     // players
-    Player player1; player1.id = 1; player1.name = "Jaap";   player1.rating = 1000.0; 
-    Player player2; player2.id = 2; player2.name = "CC";     player2.rating = 999.0; 
-    Player player3; player3.id = 3; player3.name = "Richie"; player3.rating = 998.0;
-    Player player4; player4.id = 4; player4.name = "Rick";   player4.rating = 997.0;
-    _players.push_back(player1);
-    _players.push_back(player2);
-    _players.push_back(player3);
-    _players.push_back(player4);
-
+    add_player_to_list("Jaap");
+    add_player_to_list("CC");
+    add_player_to_list("Richie");
+    add_player_to_list("Rick");
+    add_player_to_list("Tony");
+    add_player_to_list("Rich2");
+    add_player_to_list("Japster");
+    add_player_to_list("Anjo");
+    add_player_to_list("Han");
+    add_player_to_list("Daan");
+    add_player_to_list("Pascal");
+    add_player_to_list("Dimitri");
+    add_player_to_list("Kwintijn");
+    add_player_to_list("Vitalii");
+    add_player_to_list("Lourens");
+    add_player_to_list("Hielke");
 
     // menu
     wxMenu *menuFile = new wxMenu;
@@ -55,30 +63,19 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 
     // main screen
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->AddSpacer(20);
+    sizer->AddSpacer(10);
     wxStaticText *ranking = new wxStaticText(this, wxID_ANY, "Ranking", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
     ranking->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
     sizer->Add(ranking, 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
-    sizer->AddSpacer(20);
+    sizer->AddSpacer(10);
 
     // the table of players
-    score_grid = new wxFlexGridSizer(2, 10, 3);
-    sizer->Add(score_grid, 2, wxEXPAND | wxRIGHT | wxLEFT, 50);
-
-    wxStaticText *name = new wxStaticText(this, wxID_ANY, "Name", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
-    name->SetMinSize(wxSize(400, 25));
-    name->SetSize(400, 25);
-
-    wxStaticText *score = new wxStaticText(this, wxID_ANY, "Score", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
-    score->SetMinSize(wxSize(50, 25));
-    score->SetSize(50, 25);
-
-    score_grid->Add(name, 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    score_grid->Add(score, 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-
+    wxPanel *player_panel = new wxPanel(this, -1, wxDefaultPosition, wxSize(500, 200));
+    wxBoxSizer *player_sizer = new wxBoxSizer(wxVERTICAL);
+    ScrollablePlayerInfo* player_list = new ScrollablePlayerInfo(player_panel, wxID_ANY, _players);
+    player_sizer->Add(player_list, 1, wxEXPAND);
     
-    add_score_to_list("Jaap", "1000");
-    add_score_to_list("Richie", "999");
+    sizer->Add(player_sizer, 1);
 
     sizer->AddSpacer(20);
     sizer->Add(new wxButton(this, ID_new_game, "New Game"), 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
@@ -95,10 +92,17 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 MainFrame::~MainFrame()
 {}
 
-void MainFrame::add_score_to_list(const std::string &name, const std::string score)
+void MainFrame::add_player_to_list(const std::string &name)
 {
-    score_grid->Add(new wxStaticText(this, wxID_ANY, name, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    score_grid->Add(new wxStaticText(this, wxID_ANY, score, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    Player player;
+    player.id = (_highest_player_id + 1);
+    player.name = name;
+    player.rating = _starting_rate;
+    player.enabled = true;
+
+    _players.push_back(player);
+
+    _highest_player_id++;
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {

@@ -1,5 +1,5 @@
-#ifndef SCROLLABLE_PLAYER_INFO
-#define SCROLLABLE_PLAYER_INFO
+#ifndef SCROLLABLE_PLAYER_INFO_EDIT
+#define SCROLLABLE_PLAYER_INFO_EDIT
 
 #include <wx/wx.h>
 
@@ -7,10 +7,10 @@
 
 #include <sstream>
 
-class ScrollablePlayerInfo : public wxScrolledWindow
+class ScrollablePlayerInfoEdit : public wxScrolledWindow
 {
 public:
-    ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
+    ScrollablePlayerInfoEdit(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
     {
         // the sizer will take care of determining the needed scroll size
         // (if you don't use sizers you will need to manually set the viewport size)
@@ -31,12 +31,22 @@ public:
         for (Player player : players)
         {
             out << std::fixed << player.rating;
+
+            // player data
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             wxStaticText *player_name = new wxStaticText(parent, -1, player.name , wxDefaultPosition, wxSize(300, 30), wxST_NO_AUTORESIZE);
             wxStaticText *player_score = new wxStaticText(parent, -1, out.str(), wxDefaultPosition, wxSize(50, 30), wxST_NO_AUTORESIZE);
             player_sizer->Add(player_name);
             player_sizer->AddSpacer(20);
             player_sizer->Add(player_score);
+            player_sizer->AddSpacer(20);
+
+            // buttons
+            wxButton *edit_button = new wxButton(parent, -1, wxT("Edit"), wxDefaultPosition, wxSize(70, 20));
+            wxButton *delete_button = new wxButton(parent, -1, wxT("Delete"), wxDefaultPosition, wxSize(70, 20));
+            player_sizer->Add(edit_button);
+            player_sizer->AddSpacer(20);
+            player_sizer->Add(delete_button);
 
             sizer->Add(player_sizer, 0, wxALL | wxEXPAND, 2);
 
@@ -53,4 +63,4 @@ public:
 
 };
 
-#endif // SCROLLABLE_PLAYER_INFO
+#endif // SCROLLABLE_PLAYER_INFO_EDIT
