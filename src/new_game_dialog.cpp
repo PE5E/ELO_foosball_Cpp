@@ -102,9 +102,6 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     vbox->Add(hbox2, 1);
     vbox->Add(hbox, 1, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
     
-    SetSizer(vbox);
-    Centre();
-
     // bindings
     Connect(ID_TEAMS_BOX, wxEVT_RADIOBOX, wxCommandEventHandler(NewGameDialog::set_players));
     Connect(ID_TEAM_A, wxEVT_COMBOBOX, wxCommandEventHandler(NewGameDialog::score_input_a));
@@ -120,6 +117,9 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     player_input_2(tmp_evt);
     player_input_3(tmp_evt);
     player_input_4(tmp_evt);
+
+    SetSizer(vbox);
+    Centre();
 }
 
 NewGameDialog::~NewGameDialog() 

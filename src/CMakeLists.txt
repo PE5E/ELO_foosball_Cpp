@@ -11,6 +11,7 @@ set(SRC_FILES
     myapp.cpp
     mainframe.cpp
     new_game_dialog.cpp
+    player_dialog.cpp
     score_dialog.cpp
 )
 

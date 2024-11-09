@@ -5,7 +5,10 @@
 #include <wx/window.h>
 #include <wx/radiobox.h>
 
+#include "data.hpp"
+
 #include "new_game_dialog.hpp"
+#include "player_dialog.hpp"
 #include "score_dialog.hpp"
 
 #include <cstdlib>
@@ -15,15 +18,16 @@
 #include <vector>
 
 using std::cout;
+using std::cerr;
 using std::endl;
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 {
     // players
-    player player1{1, "Jaap", 1000.0, 5};
-    player player2{2, "CC", 999.0, 5};
-    player player3{3, "Richie", 998.0, 5};
-    player player4{4, "Rick", 997.0, 5};
+    Player player1; player1.id = 1; player1.name = "Jaap";   player1.rating = 1000.0; 
+    Player player2; player2.id = 2; player2.name = "CC";     player2.rating = 999.0; 
+    Player player3; player3.id = 3; player3.name = "Richie"; player3.rating = 998.0;
+    Player player4; player4.id = 4; player4.name = "Rick";   player4.rating = 997.0;
     _players.push_back(player1);
     _players.push_back(player2);
     _players.push_back(player3);
@@ -46,6 +50,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 
     Bind(wxEVT_MENU, &MainFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MainFrame::OnExit, this, wxID_EXIT);
+    Bind(wxEVT_MENU, &MainFrame::on_player_menu, this, ID_players);
 
 
     // main screen
@@ -89,6 +94,12 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
 
 MainFrame::~MainFrame()
 {}
+
+void MainFrame::add_score_to_list(const std::string &name, const std::string score)
+{
+    score_grid->Add(new wxStaticText(this, wxID_ANY, name, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    score_grid->Add(new wxStaticText(this, wxID_ANY, score, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+}
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
     wxMessageBox("Foosball ELO Rating program by Jaap", "About ", wxOK | wxICON_INFORMATION);
@@ -156,7 +167,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         {
             wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select all players", wxT("Error"), wxOK | wxICON_ERROR);
             msg->ShowModal();
-            delete msg;
+            msg->Destroy();
             delete game_diag;
             return;
         }
@@ -165,7 +176,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         {
             wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select different players", wxT("Error"), wxOK | wxICON_ERROR);
             msg->ShowModal();
-            delete msg;
+            msg->Destroy();
             delete game_diag;
             return;
         }
@@ -176,7 +187,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
             {
                 wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select all players", wxT("Error"), wxOK | wxICON_ERROR);
                 msg->ShowModal();
-                delete msg;
+                msg->Destroy();
                 delete game_diag;
                 return;
             }
@@ -185,7 +196,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
             {
                 wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select different players", wxT("Error"), wxOK | wxICON_ERROR);
                 msg->ShowModal();
-                delete msg;
+                msg->Destroy();
                 delete game_diag;
                 return;
             }
@@ -196,7 +207,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         {
             wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select the scores", wxT("Error"), wxOK | wxICON_ERROR);
             msg->ShowModal();
-            delete msg;
+            msg->Destroy();
             delete game_diag;
             return;
         }
@@ -205,7 +216,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         {
             wxMessageDialog *msg = new wxMessageDialog(NULL, "Please select different scores per team", wxT("Error"), wxOK | wxICON_ERROR);
             msg->ShowModal();
-            delete msg;
+            msg->Destroy();
             delete game_diag;
             return;
         }
@@ -217,7 +228,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
             wxMessageDialog *msg = new wxMessageDialog(NULL, txt, wxT("Error"), wxOK | wxICON_ERROR);
             msg->ShowModal();
-            delete msg;
+            msg->Destroy();
             delete game_diag;
             return;
         }
@@ -231,7 +242,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
                 wxMessageDialog *msg = new wxMessageDialog(NULL, txt, wxT("Error"), wxOK | wxICON_ERROR);
                 msg->ShowModal();
-                delete msg;
+                msg->Destroy();
                 delete game_diag;
                 return;
             }
@@ -245,17 +256,13 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         // show the results
 
         ScoreDialog *score_diag = new ScoreDialog(wxT("Game Results"), _last_game_2v2, player_names, std::to_string(score_team_a), std::to_string(score_team_b), (score_team_a > score_team_b));
-        score_diag->ShowModal();
-        delete score_diag;
-
-
     }
 
     delete game_diag;
 }
 
-void MainFrame::add_score_to_list(const std::string &name, const std::string score)
+void MainFrame::on_player_menu(wxCommandEvent& event)
 {
-    score_grid->Add(new wxStaticText(this, wxID_ANY, name, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
-    score_grid->Add(new wxStaticText(this, wxID_ANY, score, wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT), 0, wxEXPAND | wxRIGHT | wxLEFT, 0);
+    cerr << "on_player_menu" << endl;
+    PlayerDialog *player_diag = new PlayerDialog(wxT("Players"), _players);
 }

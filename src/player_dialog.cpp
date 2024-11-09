@@ -1,4 +1,6 @@
-#include "score_dialog.hpp"
+#include "player_dialog.hpp"
+
+#include "scrollable_player_info.hpp"
 
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
@@ -6,10 +8,19 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vector<std::string> players, const std::string &score_team_a, const std::string &score_team_b, bool a_is_winner) : 
+PlayerDialog::PlayerDialog(const wxString& title, const std::vector<Player> &players) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
+    _players = players;
+
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+
+
+    ScrollablePlayerInfo* player_list = new ScrollablePlayerInfo(this, wxID_ANY, _players);
+    main_sizer->Add(player_list, 1, wxEXPAND);
+
+    /*
+    
     
     wxPanel *panel1 = new wxPanel(this, -1);
     main_sizer->Add(panel1, 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
@@ -60,13 +71,14 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
     vbox->Add(hbox2, 1);
     vbox->Add(hbox, 1, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
+    */
     
-    SetSizer(vbox);
+    SetSizer(main_sizer);
     Centre();
     ShowModal();
     Destroy(); 
 }
 
-ScoreDialog::~ScoreDialog() 
+PlayerDialog::~PlayerDialog() 
 {
 }

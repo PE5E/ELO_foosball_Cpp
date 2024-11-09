@@ -6,6 +6,8 @@
     #include <wx/wx.h>
 #endif
 
+#include "data.hpp"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,14 +21,6 @@ class MainFrame : public wxFrame {
         ID_players
     };
 
-    struct player
-    {
-        uint id; // starting from 1
-        std::string name;
-        double ranking;
-        uint games_played;
-    };
-
     public:
         MainFrame();
         ~MainFrame();
@@ -37,6 +31,7 @@ class MainFrame : public wxFrame {
         void OnExit(wxCommandEvent& event);
 
         void on_new_game(wxCommandEvent& event);
+        void on_player_menu(wxCommandEvent& event);
 
         wxFlexGridSizer *score_grid;
 
@@ -50,7 +45,7 @@ class MainFrame : public wxFrame {
         uint _last_players[4] = {0};
 
 
-        std::vector<player> _players; // info from all players
+        std::vector<Player> _players; // info from all players
 };
 
 #endif // MAINFRAME_HPP
