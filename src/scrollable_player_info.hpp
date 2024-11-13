@@ -12,18 +12,16 @@ class ScrollablePlayerInfo : public wxScrolledWindow
 public:
     ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
     {
-        // the sizer will take care of determining the needed scroll size
-        // (if you don't use sizers you will need to manually set the viewport size)
-        wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* scroll_sizer = new wxBoxSizer(wxVERTICAL);
 
         // header
         wxBoxSizer *header_sizer = new wxBoxSizer(wxHORIZONTAL);
-        wxStaticText *header_name = new wxStaticText(parent, -1, "Name" , wxDefaultPosition, wxSize(300, 30), wxST_NO_AUTORESIZE);
-        wxStaticText *header_score = new wxStaticText(parent, -1, "Rating", wxDefaultPosition, wxSize(50, 30), wxST_NO_AUTORESIZE);
+        wxStaticText *header_name = new wxStaticText(this, -1, "Name" , wxPoint(0, 0), wxSize(300, 30), wxST_NO_AUTORESIZE);
+        wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(50, 30), wxST_NO_AUTORESIZE);
         header_sizer->Add(header_name);
         header_sizer->AddSpacer(20);
         header_sizer->Add(header_score);
-        sizer->Add(header_sizer, 0, wxALL | wxEXPAND, 2);
+        scroll_sizer->Add(header_sizer, 1, wxALL, 2);
         
         // add a series of widgets
         std::ostringstream out;
@@ -32,25 +30,22 @@ public:
         {
             out << std::fixed << player.rating;
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
-            wxStaticText *player_name = new wxStaticText(parent, -1, player.name , wxDefaultPosition, wxSize(300, 30), wxST_NO_AUTORESIZE);
-            wxStaticText *player_score = new wxStaticText(parent, -1, out.str(), wxDefaultPosition, wxSize(50, 30), wxST_NO_AUTORESIZE);
+            wxStaticText *player_name = new wxStaticText(this, -1, player.name , wxPoint(0, 0) , wxSize(300, 30), wxST_NO_AUTORESIZE); // wxDefaultPosition
+            wxStaticText *player_score = new wxStaticText(this, -1, out.str(), wxPoint(0, 0), wxSize(50, 30), wxST_NO_AUTORESIZE);
             player_sizer->Add(player_name);
             player_sizer->AddSpacer(20);
             player_sizer->Add(player_score);
 
-            sizer->Add(player_sizer, 0, wxALL | wxEXPAND, 2);
+            scroll_sizer->Add(player_sizer, 1, wxALL, 2);
 
             out.str("");
             out.clear();
         }
-        
-        this->SetSizer(sizer);
 
-        // this part makes the scrollbars show up
-        this->FitInside(); // ask the sizer about the needed size
+        this->SetSizer(scroll_sizer);
+        this->FitInside();
         this->SetScrollRate(5, 5);
     }
-
 };
 
 #endif // SCROLLABLE_PLAYER_INFO

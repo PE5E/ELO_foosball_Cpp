@@ -70,12 +70,12 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
     sizer->AddSpacer(10);
 
     // the table of players
-    wxPanel *player_panel = new wxPanel(this, -1, wxDefaultPosition, wxSize(500, 200));
-    wxBoxSizer *player_sizer = new wxBoxSizer(wxVERTICAL);
+    wxPanel *player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 250));
+    wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
     ScrollablePlayerInfo* player_list = new ScrollablePlayerInfo(player_panel, wxID_ANY, _players);
     player_sizer->Add(player_list, 1, wxEXPAND);
-    
-    sizer->Add(player_sizer, 1);
+    player_panel->SetSizer(player_sizer);
+    sizer->Add(player_panel, 1, wxALL | wxALIGN_CENTER_VERTICAL | wxGROW, 5, NULL);
 
     sizer->AddSpacer(20);
     sizer->Add(new wxButton(this, ID_new_game, "New Game"), 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
