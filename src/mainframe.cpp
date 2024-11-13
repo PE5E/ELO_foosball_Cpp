@@ -10,7 +10,6 @@
 #include "new_game_dialog.hpp"
 #include "player_dialog.hpp"
 #include "score_dialog.hpp"
-#include "scrollable_player_info.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -70,21 +69,41 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
     sizer->AddSpacer(10);
 
     // the table of players
+    // header
+    wxBoxSizer *header_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *header_name = new wxStaticText(this, -1, "Name" , wxPoint(0, 0), wxSize(300, 30), wxST_NO_AUTORESIZE);
+    wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(50, 30), wxST_NO_AUTORESIZE);
+    header_sizer->Add(header_name);
+    header_sizer->AddSpacer(20);
+    header_sizer->Add(header_score);
+    sizer->Add(header_sizer, 0, wxLEFT | wxRIGHT | wxEXPAND, 50);
+
+    // player list
     wxPanel *player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 250));
     wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
-    ScrollablePlayerInfo* player_list = new ScrollablePlayerInfo(player_panel, wxID_ANY, _players);
-    player_sizer->Add(player_list, 1, wxEXPAND);
+    _player_list = new ScrollablePlayerInfo(player_panel, wxID_ANY, _players);
+    player_sizer->Add(_player_list, 1, wxEXPAND);
     player_panel->SetSizer(player_sizer);
-    sizer->Add(player_panel, 1, wxALL | wxALIGN_CENTER_VERTICAL | wxGROW, 5, NULL);
+    sizer->Add(player_panel, 0, wxLEFT | wxRIGHT | wxGROW, 50, NULL);
 
     sizer->AddSpacer(20);
-    sizer->Add(new wxButton(this, ID_new_game, "New Game"), 0, wxEXPAND | wxRIGHT | wxLEFT, 250);
+    auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
+    button_sizer->AddSpacer(180);
+    button_sizer->Add(new wxButton(this, ID_new_game, "New Game"), 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
+    button_sizer->AddSpacer(180);
+    button_sizer->Add(new wxButton(this, ID_scroll_up, "up", wxPoint(0, 0), wxSize(50, 30)), 0, wxEXPAND | wxRIGHT, 10);
+    button_sizer->Add(new wxButton(this, ID_scroll_down, "down", wxPoint(0, 0), wxSize(50, 30)), 0, wxEXPAND | wxRIGHT, 30);
+
+    sizer->Add(button_sizer, 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
     sizer->AddSpacer(10);
     
     sizer->SetSizeHints(this);
     SetSizer(sizer);
 
     Bind(wxEVT_BUTTON, &MainFrame::on_new_game, this, ID_new_game);
+    Bind(wxEVT_BUTTON, &MainFrame::on_scroll_up, this, ID_scroll_up);
+    Bind(wxEVT_BUTTON, &MainFrame::on_scroll_down, this, ID_scroll_down);
+    
     
     wxWindow::SetSize(wxDefaultCoord, wxDefaultCoord, _main_width, _main_height, wxSIZE_FORCE);
 }
@@ -269,4 +288,14 @@ void MainFrame::on_player_menu(wxCommandEvent& event)
 {
     cerr << "on_player_menu" << endl;
     PlayerDialog *player_diag = new PlayerDialog(wxT("Players"), _players);
+}
+
+void MainFrame::on_scroll_up(wxCommandEvent& event)
+{
+    _player_list->Scroll(0, 0);
+}
+
+void MainFrame::on_scroll_down(wxCommandEvent& event)
+{
+    _player_list->Scroll(0, 100);
 }

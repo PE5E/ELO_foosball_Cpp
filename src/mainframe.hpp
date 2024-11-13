@@ -8,6 +8,8 @@
 
 #include "data.hpp"
 
+#include "scrollable_player_info.hpp"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,7 +20,9 @@ class MainFrame : public wxFrame {
         ID_Hello = 1,
         ID_file,
         ID_new_game,
-        ID_players
+        ID_players,
+        ID_scroll_up,
+        ID_scroll_down
     };
 
     public:
@@ -31,9 +35,12 @@ class MainFrame : public wxFrame {
         void OnExit(wxCommandEvent& event);
 
         void on_new_game(wxCommandEvent& event);
+        void on_scroll_up(wxCommandEvent& event);
+        void on_scroll_down(wxCommandEvent& event);
         void on_player_menu(wxCommandEvent& event);
 
         wxFlexGridSizer *score_grid;
+        ScrollablePlayerInfo *_player_list;
 
         int _main_width = 800;
         int _main_height = 400;

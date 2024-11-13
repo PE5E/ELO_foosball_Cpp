@@ -6,6 +6,7 @@
 #include "data.hpp"
 
 #include <sstream>
+#include <vector>
 
 class ScrollablePlayerInfo : public wxScrolledWindow
 {
@@ -13,15 +14,6 @@ public:
     ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
     {
         wxBoxSizer* scroll_sizer = new wxBoxSizer(wxVERTICAL);
-
-        // header
-        wxBoxSizer *header_sizer = new wxBoxSizer(wxHORIZONTAL);
-        wxStaticText *header_name = new wxStaticText(this, -1, "Name" , wxPoint(0, 0), wxSize(300, 30), wxST_NO_AUTORESIZE);
-        wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(50, 30), wxST_NO_AUTORESIZE);
-        header_sizer->Add(header_name);
-        header_sizer->AddSpacer(20);
-        header_sizer->Add(header_score);
-        scroll_sizer->Add(header_sizer, 1, wxALL, 2);
         
         // add a series of widgets
         std::ostringstream out;
