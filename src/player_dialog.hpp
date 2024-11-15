@@ -5,18 +5,18 @@
 
 #include "data.hpp"
 
+#include <memory>
 #include <vector>
 
 
 class PlayerDialog : public wxDialog
 {
 public:
-    PlayerDialog(const wxString& title, const std::vector<Player> &players);
+    PlayerDialog(const wxString& title, const std::shared_ptr<std::vector<Player>> players);
     ~PlayerDialog();
 
 
 private:
-    std::vector<Player> _players;
 };
 
 #endif // PLAYER_DIALOG_HPP

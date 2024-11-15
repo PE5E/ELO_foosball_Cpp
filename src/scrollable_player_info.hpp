@@ -11,15 +11,16 @@
 class ScrollablePlayerInfo : public wxScrolledWindow
 {
 public:
-    ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
+    ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::shared_ptr<std::vector<Player>> players) : wxScrolledWindow(parent, id)
     {
         wxBoxSizer* scroll_sizer = new wxBoxSizer(wxVERTICAL);
         
         // add a series of widgets
         std::ostringstream out;
         out.precision(1);
-        for (Player player : players)
+        for (int index = 0; index != players->size(); index++)
         {
+            const Player &player = (*players)[index];
             out << std::fixed << player.rating;
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             wxStaticText *player_name = new wxStaticText(this, -1, player.name , wxPoint(0, 0) , wxSize(300, 30), wxST_NO_AUTORESIZE); // wxDefaultPosition

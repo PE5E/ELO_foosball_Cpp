@@ -10,14 +10,15 @@
 class ScrollablePlayerInfoEdit : public wxScrolledWindow
 {
 public:
-    ScrollablePlayerInfoEdit(wxWindow* parent, wxWindowID id, const std::vector<Player> players) : wxScrolledWindow(parent, id)
+    ScrollablePlayerInfoEdit(wxWindow* parent, wxWindowID id, const std::shared_ptr<std::vector<Player>> players) : wxScrolledWindow(parent, id)
     {
         wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
         
         std::ostringstream out;
         out.precision(1);
-        for (Player player : players)
+        for (int index = 0; index != players->size(); index++)
         {
+            const Player &player = (*players)[index];
             out << std::fixed << player.rating;
 
             // player data

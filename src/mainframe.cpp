@@ -21,8 +21,12 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating")
+MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
+    _data_manager(nullptr)
 {
+    _data_manager = std::make_unique<DataManager>();
+    _players = _data_manager->players();
+
     // players
     add_player_to_list("Jaap");
     add_player_to_list("CC");
@@ -119,7 +123,7 @@ void MainFrame::add_player_to_list(const std::string &name)
     player.rating = _starting_rate;
     player.enabled = true;
 
-    _players.push_back(player);
+    _players->push_back(player);
 
     _highest_player_id++;
 }
@@ -133,7 +137,7 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MainFrame::on_new_game(wxCommandEvent& event) {
-    int player_count = _players.size() + 1; // add 1 for first entry
+    int player_count = _players->size() + 1; // add 1 for first entry
 
     std::vector<uint> player_ids;
     std::vector<wxString> player_names;
@@ -141,10 +145,10 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
     player_ids.push_back(0);
     player_names.push_back("-");
 
-    for(int index = 0; index != _players.size(); index++)
+    for(int index = 0; index != _players->size(); index++)
     {
-        player_ids.push_back(_players.at(index).id);
-        player_names.push_back(_players.at(index).name);
+        player_ids.push_back(_players->at(index).id);
+        player_names.push_back(_players->at(index).name);
     }
 
     // create and show dialog

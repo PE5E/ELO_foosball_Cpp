@@ -8,6 +8,8 @@
 
 #include "data.hpp"
 
+#include "data_manager.hpp"
+
 #include "scrollable_player_info.hpp"
 
 #include <memory>
@@ -39,12 +41,14 @@ class MainFrame : public wxFrame {
         void on_scroll_down(wxCommandEvent& event);
         void on_player_menu(wxCommandEvent& event);
 
+        // UI elements
         wxFlexGridSizer *score_grid;
         ScrollablePlayerInfo *_player_list;
-
         int _main_width = 800;
         int _main_height = 400;
-        uint _max_score = 10;
+
+        // game settings
+        uint _max_score = 10; // score that one team needs to win
         bool _only_max_score_game = true; // if set to true, only a score from one team that is equal to max score is accepted
 
         // last game settings
@@ -54,8 +58,8 @@ class MainFrame : public wxFrame {
         double _starting_rate = 1000.0;
         uint _highest_player_id = 1;
 
-
-        std::vector<Player> _players; // info from all players
+        std::unique_ptr<DataManager> _data_manager;
+        std::shared_ptr<std::vector<Player>> _players;
 };
 
 #endif // MAINFRAME_HPP

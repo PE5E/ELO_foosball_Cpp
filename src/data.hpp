@@ -52,6 +52,6 @@ Game data:
 - 1v1 or 2v2
 - player id 1, 2, 3, 4 (1&3 team A, 2&4 team B)
 - score teams A & B
-- datetime
+- datetime yymmdd-hhmmss local time
 */
 #endif // DATA_HPP

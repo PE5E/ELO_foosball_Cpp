@@ -8,11 +8,9 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-PlayerDialog::PlayerDialog(const wxString& title, const std::vector<Player> &players) : 
+PlayerDialog::PlayerDialog(const wxString& title, const std::shared_ptr<std::vector<Player>> players) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
-    _players = players;
-
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
     // header
@@ -26,7 +24,7 @@ PlayerDialog::PlayerDialog(const wxString& title, const std::vector<Player> &pla
 
     wxPanel *edit_player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 250));
     wxBoxSizer *edit_player_sizer = new wxBoxSizer(wxHORIZONTAL);
-    ScrollablePlayerInfoEdit* edit_player_list = new ScrollablePlayerInfoEdit(edit_player_panel, wxID_ANY, _players);
+    ScrollablePlayerInfoEdit* edit_player_list = new ScrollablePlayerInfoEdit(edit_player_panel, wxID_ANY, players);
     edit_player_sizer->Add(edit_player_list, 1, wxEXPAND);
     edit_player_panel->SetSizer(edit_player_sizer);
     main_sizer->Add(edit_player_panel, 1, wxALL | wxALIGN_CENTER_VERTICAL | wxGROW, 5, NULL);
