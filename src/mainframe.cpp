@@ -27,23 +27,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
     _data_manager = std::make_unique<DataManager>();
     _players = _data_manager->players();
 
-    // players
-    add_player_to_list("Jaap");
-    add_player_to_list("CC");
-    add_player_to_list("Richie");
-    add_player_to_list("Rick");
-    add_player_to_list("Tony");
-    add_player_to_list("Rich2");
-    add_player_to_list("Japster");
-    add_player_to_list("Anjo");
-    add_player_to_list("Han");
-    add_player_to_list("Daan");
-    add_player_to_list("Pascal");
-    add_player_to_list("Dimitri");
-    add_player_to_list("Kwintijn");
-    add_player_to_list("Vitalii");
-    add_player_to_list("Lourens");
-    add_player_to_list("Hielke");
+    _data_manager->load_players();
 
     // menu
     wxMenu *menuFile = new wxMenu;
@@ -118,7 +102,7 @@ MainFrame::~MainFrame()
 void MainFrame::add_player_to_list(const std::string &name)
 {
     Player player;
-    player.id = (_highest_player_id + 1);
+    player.id = _highest_player_id;
     player.name = name;
     player.rating = _starting_rate;
     player.enabled = true;
