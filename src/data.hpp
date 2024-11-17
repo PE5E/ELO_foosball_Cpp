@@ -15,7 +15,7 @@ struct Player
     {
         id = 0;
         name = "";
-        rating = 0.0;
+        rating = 1000.0; // everyone starts with this rating
         games_played = 0;
         enabled = true;
     }

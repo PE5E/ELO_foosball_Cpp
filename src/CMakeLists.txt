@@ -8,6 +8,7 @@ include(${wxWidgets_USE_FILE})
 # Define a variable containing a list of source files for the project
 set(SRC_FILES
     data_manager.cpp
+    elo_calculation.cpp
     main.cpp
     myapp.cpp
     mainframe.cpp
