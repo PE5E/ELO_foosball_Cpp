@@ -268,7 +268,7 @@ bool DataManager::load_last_game(Game &game)
 
         while(std::getline(_games_file, line)) 
         {
-            std::cout << "Line: " << line << std::endl;
+            // std::cout << "Line: " << line << std::endl;
             
             // skip entries starting with: # 
             if(line.at(0) == '#') {

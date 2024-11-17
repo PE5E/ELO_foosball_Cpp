@@ -9,6 +9,7 @@
 #include "data.hpp"
 
 #include "data_manager.hpp"
+#include "elo_calculator.hpp"
 
 #include "scrollable_player_info.hpp"
 
@@ -31,6 +32,7 @@ class MainFrame : public wxFrame {
         MainFrame();
         ~MainFrame();
         void add_player_to_list(const std::string &name);
+        Player get_player(uint player_id);
 
     private:
         void OnAbout(wxCommandEvent& event);
@@ -61,6 +63,7 @@ class MainFrame : public wxFrame {
 
         std::unique_ptr<DataManager> _data_manager;
         std::shared_ptr<std::vector<Player>> _players;
+        EloCalculator _elo_calculator;
 };
 
 #endif // MAINFRAME_HPP

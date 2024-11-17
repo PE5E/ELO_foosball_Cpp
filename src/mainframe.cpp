@@ -22,7 +22,8 @@ using std::cerr;
 using std::endl;
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
-    _data_manager(nullptr)
+    _data_manager(nullptr),
+    _elo_calculator()
 {
     _data_manager = std::make_unique<DataManager>();
     _data_manager->load_players();
@@ -132,6 +133,16 @@ void MainFrame::add_player_to_list(const std::string &name)
     player.enabled = true;
 
     _players->push_back(player);
+}
+
+Player MainFrame::get_player(uint player_id)
+{
+    for(const Player &player : (*_players))
+    {
+        if(player.id == player_id) return player;
+    }
+
+    return Player();
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
@@ -283,6 +294,64 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
         // there should be valid results here
 
+        // calculate ELO ratings
+        std::vector<EloPlayer> elo_scores;
+        
+        uint elo_score_team_a = 0;
+        uint elo_score_team_b = 0;
+        if(score_team_a > score_team_b)
+        {
+            elo_score_team_a = 1;
+        }
+        else 
+        {
+            elo_score_team_b = 1;
+        }
+
+        EloPlayer elo_1;
+        elo_1.id = player1_id;
+        elo_1.name = get_player(player1_id).name;
+        elo_1.games_played = get_player(player1_id).games_played;
+        elo_1.old_elo = get_player(player1_id).rating;
+        elo_1.score = elo_score_team_a;
+        elo_scores.push_back(elo_1);
+
+        EloPlayer elo_2;
+        elo_2.id = player2_id;
+        elo_2.name = get_player(player2_id).name;
+        elo_2.games_played = get_player(player2_id).games_played;
+        elo_2.old_elo = get_player(player2_id).rating;
+        elo_2.score = elo_score_team_b;
+        elo_scores.push_back(elo_2);
+
+        if(teams_2v2)
+        {
+            EloPlayer elo_3;
+            elo_3.id = player3_id;
+            elo_3.name = get_player(player3_id).name;
+            elo_3.games_played = get_player(player3_id).games_played;
+            elo_3.old_elo = get_player(player3_id).rating;
+            elo_3.score = elo_score_team_a;
+            elo_scores.push_back(elo_3);
+
+            EloPlayer elo_4;
+            elo_4.id = player4_id;
+            elo_4.name = get_player(player4_id).name;
+            elo_4.games_played = get_player(player4_id).games_played;
+            elo_4.old_elo = get_player(player4_id).rating;
+            elo_4.score = elo_score_team_b;
+            elo_scores.push_back(elo_4);
+        }
+
+        _elo_calculator.set_and_calculate(elo_scores);
+
+        cout << "ELO calculation results:" << endl;
+        for(EloPlayer elo_player : elo_scores)
+        {
+            cout << "Player name: " << elo_player.name << " old ELO: " << elo_player.old_elo << " new ELO: " << elo_player.new_elo << " ELO diff: " << elo_player.elo_diff << endl;
+        }
+
+        // save game data
         _highest_game_id++;
         Game game;
         game.id = _highest_game_id;
@@ -299,8 +368,6 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
         _data_manager->save_game(game);
 
-        // calculate the new ELO ratings
-        // calculate difference in ELO ratings per player
         // save the results
         // show the results
 
