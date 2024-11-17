@@ -135,14 +135,15 @@ void MainFrame::add_player_to_list(const std::string &name)
     _players->push_back(player);
 }
 
-Player MainFrame::get_player(uint player_id)
+Player& MainFrame::get_player(uint player_id)
 {
-    for(const Player &player : (*_players))
+    for(Player &player : (*_players))
     {
         if(player.id == player_id) return player;
     }
 
-    return Player();
+    // we should not end up here, but if so, return something...
+    return (*_players).at(0);
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
@@ -349,7 +350,12 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         for(EloPlayer elo_player : elo_scores)
         {
             cout << "Player name: " << elo_player.name << " old ELO: " << elo_player.old_elo << " new ELO: " << elo_player.new_elo << " ELO diff: " << elo_player.elo_diff << endl;
+            get_player(elo_player.id).rating = elo_player.new_elo;
+            get_player(elo_player.id).games_played++;
         }
+
+        // save the results for the players
+        _data_manager->save_players();
 
         // save game data
         _highest_game_id++;
@@ -368,10 +374,9 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
         _data_manager->save_game(game);
 
-        // save the results
         // show the results
 
-        ScoreDialog *score_diag = new ScoreDialog(wxT("Game Results"), _last_game_2v2, player_names, std::to_string(score_team_a), std::to_string(score_team_b), (score_team_a > score_team_b));
+        ScoreDialog *score_diag = new ScoreDialog(wxT("Game Results"), _last_game_2v2, elo_scores, std::to_string(score_team_a), std::to_string(score_team_b), (score_team_a > score_team_b));
     }
 
     delete game_diag;

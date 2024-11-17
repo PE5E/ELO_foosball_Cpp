@@ -48,6 +48,9 @@ bool EloCalculator::set_and_calculate(std::vector<EloPlayer> &players)
     double team_a_expectation = calculate_expectation(team_a_avg_elo, team_b_avg_elo);
     double team_b_expectation = calculate_expectation(team_b_avg_elo, team_a_avg_elo);
 
+
+    // @TODO: change newbie function so that if at least 1 newbie joined the game, all players get newbie ratings system 
+
     // Calculate K factor based on newbie status
     double player_0_factor = _k_factor;
     double player_1_factor = _k_factor;

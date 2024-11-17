@@ -6,7 +6,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vector<std::string> players, const std::string &score_team_a, const std::string &score_team_b, bool a_is_winner) : 
+ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vector<EloPlayer> players, const std::string &score_team_a, const std::string &score_team_b, bool a_is_winner) : 
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
@@ -16,22 +16,22 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
 
     wxPanel *panel2 = new wxPanel(this, -1);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
-    wxStaticText *player1_txt = new wxStaticText(panel2, -1, players.at(0), wxPoint(25, 30), wxSize(260, 30), wxST_NO_AUTORESIZE, "player1");
+    wxStaticText *player1_txt = new wxStaticText(panel2, -1, players.at(0).name, wxPoint(25, 30), wxSize(260, 30), wxST_NO_AUTORESIZE, "player1");
     wxPanel *panel4 = new wxPanel(panel2, -1, wxPoint(115, 150), wxSize(82, 42), wxSIMPLE_BORDER);
     wxStaticText *teamA_txt = new wxStaticText(panel4, -1, score_team_a, wxPoint(0, 8), wxSize(80, 40), wxST_NO_AUTORESIZE | wxALIGN_CENTRE, "Score Team A");
     teamA_txt->SetFont( wxFont(14, wxDEFAULT, wxNORMAL, wxNORMAL, FALSE, "", wxFONTENCODING_SYSTEM));
 
     wxPanel *panel3 = new wxPanel(this, -1);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
-    wxStaticText *player2_txt = new wxStaticText(panel3, -1, players.at(1), wxPoint(25, 30), wxSize(260, 30), wxST_NO_AUTORESIZE, "player2");
+    wxStaticText *player2_txt = new wxStaticText(panel3, -1, players.at(1).name, wxPoint(25, 30), wxSize(260, 30), wxST_NO_AUTORESIZE, "player2");
     wxPanel *panel5 = new wxPanel(panel3, -1, wxPoint(115, 150), wxSize(82, 42), wxSIMPLE_BORDER);
     wxStaticText *teamB_txt = new wxStaticText(panel5, -1, score_team_b, wxPoint(0, 8), wxSize(80, 40), wxST_NO_AUTORESIZE | wxALIGN_CENTRE, "Score Team B");
     teamB_txt->SetFont( wxFont(14, wxDEFAULT, wxNORMAL, wxNORMAL, FALSE, "", wxFONTENCODING_SYSTEM));
 
     if(teams_2v2)
     {
-        wxStaticText *player3_txt = new wxStaticText(panel2, -1, players.at(2), wxPoint(25, 80), wxSize(260, 30), wxST_NO_AUTORESIZE, "player3");
-        wxStaticText *player4_txt = new wxStaticText(panel3, -1, players.at(3), wxPoint(25, 80), wxSize(260, 30), wxST_NO_AUTORESIZE, "player4");
+        wxStaticText *player3_txt = new wxStaticText(panel2, -1, players.at(2).name, wxPoint(25, 80), wxSize(260, 30), wxST_NO_AUTORESIZE, "player3");
+        wxStaticText *player4_txt = new wxStaticText(panel3, -1, players.at(3).name, wxPoint(25, 80), wxSize(260, 30), wxST_NO_AUTORESIZE, "player4");
     }
 
     if(a_is_winner)

@@ -32,7 +32,7 @@ class MainFrame : public wxFrame {
         MainFrame();
         ~MainFrame();
         void add_player_to_list(const std::string &name);
-        Player get_player(uint player_id);
+        Player& get_player(uint player_id);
 
     private:
         void OnAbout(wxCommandEvent& event);

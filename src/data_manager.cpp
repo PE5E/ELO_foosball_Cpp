@@ -83,7 +83,7 @@ bool DataManager::load_players()
 
         std::string line;
         int player_count = 0;
-        int player_false = 0;
+        int player_failed = 0;
         while(std::getline(_players_file, line)) {
             // std::cerr << "Line: " << line << std::endl;
 
@@ -99,10 +99,10 @@ bool DataManager::load_players()
             }
             else 
             {
-                player_false++;
+                player_failed++;
             }
         }
-        std::cout << "Loading players succesfully: " << player_count << " and failed: " << player_false << std::endl;
+        std::cout << "Loading players succesfully: " << player_count << " and failed: " << player_failed << std::endl;
         for(int index = 0; index != _players->size(); index++)
         {
             const Player &player = (*_players)[index];
@@ -110,6 +110,8 @@ bool DataManager::load_players()
         }
         std::cout << std::endl;
 
+        _players_file.clear();
+        _players_file.seekg(0, std::ios::beg);
     }
     catch(const std::exception &ex)
     {
@@ -151,6 +153,11 @@ bool DataManager::save_players()
             sprintf(line, "%u,%s,%1.2f,%u,%c", player.id, player.name.c_str(), player.rating, player.games_played, (player.enabled ? 'y' : 'n'));
             _players_file << line << LINE_END;
         }
+
+        _players_file.clear();
+        _players_file.seekg(0, std::ios::beg);
+
+        std::cout << "Done saving players. _players_file status: " << (_players_file.good() ? "good" : "bad") << std::endl;
     }
     catch(const std::exception &ex)
     {
