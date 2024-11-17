@@ -195,7 +195,6 @@ void NewGameDialog::score_input_a(wxCommandEvent &event)
     }
 
     _first_score = false;
-    std::cout << "Team A: " << _score_a << std::endl; 
 }
 
 void NewGameDialog::score_input_b(wxCommandEvent &event)
@@ -209,7 +208,6 @@ void NewGameDialog::score_input_b(wxCommandEvent &event)
     }
 
     _first_score = false;
-    std::cout << "Team B: " << _score_b << std::endl; 
 }
 
 void NewGameDialog::player_input_1(wxCommandEvent &event)

@@ -19,6 +19,12 @@ public:
         for (int index = 0; index != players->size(); index++)
         {
             const Player &player = (*players)[index];
+            // check if player can be displayed
+            if(player.enabled == false)
+            {
+                continue;
+            }
+
             out << std::fixed << player.rating;
 
             // player data

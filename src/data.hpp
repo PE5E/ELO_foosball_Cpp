@@ -25,10 +25,10 @@ struct Game
 {
     uint id;            // sequential, starting from 1
     bool teams_2v2;     // 1v1 or 2v2
-    uint player_id_1;   // sequential, starting from 1
-    uint player_id_2;   // sequential, starting from 1
-    uint player_id_3;   // sequential, starting from 1
-    uint player_id_4;   // sequential, starting from 1
+    uint player_id_1;   // sequential, starting from 1, team A
+    uint player_id_2;   // sequential, starting from 1, Team B
+    uint player_id_3;   // sequential, starting from 1, Team A
+    uint player_id_4;   // sequential, starting from 1, Team B
     uint score_team_a;  // 0-10
     uint score_team_b;  // 0-10
     std::string date_time; // yymmdd-hhmmss local time
@@ -46,12 +46,5 @@ struct Game
         date_time = "";
     }
 };
-/*
-Game data:
-- id (sequential, starting from 1)
-- 1v1 or 2v2
-- player id 1, 2, 3, 4 (1&3 team A, 2&4 team B)
-- score teams A & B
-- datetime yymmdd-hhmmss local time
-*/
+
 #endif // DATA_HPP

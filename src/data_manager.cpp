@@ -1,5 +1,6 @@
 #include "data_manager.hpp"
 
+#include <ctime>
 #include <cstdio>
 #include <iostream>
 #include <string>
@@ -20,13 +21,10 @@ DataManager::DataManager() :
 
     set_player_file(_players_filename);
     set_games_file(_games_filename);
-
-    // load_players();
 }
 
 DataManager::~DataManager()
 {
-    save_players();
     _players_file.close();
     _games_file.close();
 }
@@ -87,10 +85,11 @@ bool DataManager::load_players()
         int player_count = 0;
         int player_false = 0;
         while(std::getline(_players_file, line)) {
-            std::cerr << "Line: " << line << std::endl;
+            // std::cerr << "Line: " << line << std::endl;
 
             // skip entries starting with: # 
-            if(line.at(0) == '#') {
+            if(line.at(0) == '#') 
+            {
                 continue;
             }
 
@@ -115,6 +114,7 @@ bool DataManager::load_players()
     catch(const std::exception &ex)
     {
         std::cerr << "Error in load_players() " << ex.what() << std::endl;
+        return false;
     }
     return true;
 }
@@ -130,6 +130,10 @@ bool DataManager::save_players()
                 std::cerr << "Error in save_players(). File is not open" << std::endl;
                 return false;
             }
+        }
+        else {
+            std::cerr << "Error in save_players(). fstream doesn't exist" << std::endl;
+            return false;
         }
 
         // start at beginning of file
@@ -151,6 +155,7 @@ bool DataManager::save_players()
     catch(const std::exception &ex)
     {
         std::cerr << "Error in save_players() " << ex.what() << std::endl;
+        return false;
     }
     return true;
 }
@@ -176,6 +181,9 @@ bool DataManager::set_games_file(const std::string &games_filename)
         std::cout << "Using games file: " << games_filename << std::endl;
 
         _games_filename = games_filename;
+
+        // write header
+        _games_file << _games_header << LINE_END;
     }
     catch(const std::exception &ex)
     {
@@ -193,12 +201,35 @@ bool DataManager::save_game(const Game &game)
         {
             if(!_games_file.is_open())
             {
-                if(!set_games_file(_games_filename))
-                {
-                    return false;
-                }
-            } 
+                std::cerr << "Error in save_game(). File is not open" << std::endl;
+                return false;
+            }
         }
+        else 
+        {
+            std::cerr << "Error in save_game(). fstream doesn't exist" << std::endl;
+            return false;
+        }
+
+        // check if header already exists exactly like defined here, else write header first
+
+        /*  uint id;            // sequential, starting from 1
+            bool teams_2v2;     // 1v1 or 2v2
+            uint player_id_1;   // sequential, starting from 1
+            uint player_id_2;   // sequential, starting from 1
+            uint player_id_3;   // sequential, starting from 1
+            uint player_id_4;   // sequential, starting from 1
+            uint score_team_a;  // 0-10
+            uint score_team_b;  // 0-10
+            std::string date_time
+        */
+    
+        char line[50];
+        sprintf(line, "%u,%c,%u,%u,%u,%u,%u,%u,%s", game.id, (game.teams_2v2 ? '2' : '1'), game.player_id_1, game.player_id_2, game.player_id_3,
+            game.player_id_4, game.score_team_a, game.score_team_b, game.date_time.c_str());
+        _games_file << line << LINE_END;
+        std::cout << "Write to game file: " << std::endl;
+        std::cout << line << std::endl;
 
     }
     catch(const std::exception &ex)
@@ -209,6 +240,101 @@ bool DataManager::save_game(const Game &game)
     return true;
 }
 
+bool DataManager::load_last_game(Game &game)
+{
+    try 
+    {
+        if(_games_file)
+        {
+            if(!_games_file.is_open())
+            {
+                std::cerr << "Error in load_players(). File is not open" << std::endl;
+                return false;
+            } 
+        }
+        else 
+        {
+            std::cerr << "Error in load_last_game(). fstream doesn't exist" << std::endl;
+            return false;
+        }
+
+        _games_file.clear();
+        _games_file.seekg(0, std::ios::beg);
+
+        std::string line;
+        std::cout << "Loading games" << std::endl;
+
+        int game_counter = 0;
+
+        while(std::getline(_games_file, line)) 
+        {
+            std::cout << "Line: " << line << std::endl;
+            
+            // skip entries starting with: # 
+            if(line.at(0) == '#') {
+                continue;
+            }
+
+            // read the values from a single line
+            std::vector<std::string> values;
+            std::stringstream ss (line);
+            std::string item;
+
+            while (getline (ss, item, ',')) 
+            {
+                values.push_back (item);
+            }
+            if(values.size() < 9)
+            {
+                std::cerr << "Error in DataManager::load_last_game: not enough values" << std::endl;
+                continue;
+            }
+
+            Game tmp_game;
+            tmp_game.id = std::stoi(values[0]);
+            tmp_game.teams_2v2 = (values[1] == "2");
+            tmp_game.player_id_1 = std::stoi(values[2]);
+            tmp_game.player_id_2 = std::stoi(values[3]);
+            tmp_game.player_id_3 = std::stoi(values[4]);
+            tmp_game.player_id_4 = std::stoi(values[5]);
+            tmp_game.score_team_a = std::stoi(values[6]);
+            tmp_game.score_team_b = std::stoi(values[7]);
+            tmp_game.date_time = values[8];
+
+            game = std::move(tmp_game);
+            game_counter++;
+        }
+
+        std::cout << "Read games succesfully: " << game_counter << std::endl;
+        _games_file.clear(); // reset flags
+
+        if(game_counter == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+    catch(const std::exception &ex)
+    {
+        std::cerr << "Error in load_last_game() " << ex.what() << std::endl;
+        return false;
+    }
+    return true;
+}
+
+std::string DataManager::date_time()
+{
+    time_t timestamp = time(nullptr);
+    struct tm now = *localtime(&timestamp);
+
+    char datetime[14];
+    std::string year = std::to_string(now.tm_year).substr(1);
+    sprintf(datetime, "%s%02u%02u-%02u%02u%02u", year.c_str(), (now.tm_mon + 1), now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec);
+    
+    return std::string(datetime);
+}
+
 bool DataManager::add_player(const std::string &text)
 {
     try {
@@ -216,7 +342,8 @@ bool DataManager::add_player(const std::string &text)
         std::stringstream ss (text);
         std::string item;
 
-        while (getline (ss, item, ',')) {
+        while (getline (ss, item, ',')) 
+        {
             values.push_back (item);
         }
         if(values.size() < 5)

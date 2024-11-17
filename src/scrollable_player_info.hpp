@@ -21,6 +21,12 @@ public:
         for (int index = 0; index != players->size(); index++)
         {
             const Player &player = (*players)[index];
+            // check if player can be displayed
+            if(player.enabled == false)
+            {
+                continue;
+            }
+
             out << std::fixed << player.rating;
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             wxStaticText *player_name = new wxStaticText(this, -1, player.name , wxPoint(0, 0) , wxSize(300, 30), wxST_NO_AUTORESIZE); // wxDefaultPosition

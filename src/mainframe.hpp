@@ -56,7 +56,8 @@ class MainFrame : public wxFrame {
         uint _last_players[4] = {0};
 
         double _starting_rate = 1000.0;
-        uint _highest_player_id = 1;
+        uint _highest_player_id = 0; 
+        uint _highest_game_id = 0;
 
         std::unique_ptr<DataManager> _data_manager;
         std::shared_ptr<std::vector<Player>> _players;

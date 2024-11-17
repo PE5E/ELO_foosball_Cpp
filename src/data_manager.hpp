@@ -19,7 +19,9 @@ class DataManager {
         
         bool set_games_file(const std::string &games_filename);
         bool save_game(const Game &game);
-        // for now, games are only saved and can not be loaded
+        bool load_last_game(Game &game);
+
+        std::string date_time(); // returns date and time as yymmdd-hhmmss
 
     private:
         bool add_player(const std::string &text);
@@ -33,7 +35,7 @@ class DataManager {
         std::fstream _games_file;
 
         std::string _players_header = "#id,name,rating,games_played,enabled";
-        std::string _games_header = "#id,teams_2v2,player_id_1,player_id_2,player_id_3,player_id_4,score_team_a,score_team_b,date_time";
+        std::string _games_header = "#id,team_size,player_id_1,player_id_2,player_id_3,player_id_4,score_team_a,score_team_b,date_time";
 };
 
 

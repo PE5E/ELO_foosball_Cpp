@@ -25,9 +25,31 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
     _data_manager(nullptr)
 {
     _data_manager = std::make_unique<DataManager>();
+    _data_manager->load_players();
     _players = _data_manager->players();
 
-    _data_manager->load_players();
+    // check for highest id for player and game
+    for (int index = 0; index != _players->size(); index++)
+    {
+        const Player &player = (*_players)[index];
+        // check if player can be displayed
+        if(player.enabled == false)
+        {
+            continue;
+        }
+        if(player.id > _highest_player_id)
+        {
+            _highest_player_id = player.id;
+        }
+    }
+    cout << "Loaded highest player id: " << _highest_player_id << endl;
+
+    Game game;
+    if(_data_manager->load_last_game(game))
+    {
+        _highest_game_id = game.id;
+        cout << "Loaded highest game id: " << _highest_game_id << endl;
+    }
 
     // menu
     wxMenu *menuFile = new wxMenu;
@@ -101,6 +123,8 @@ MainFrame::~MainFrame()
 
 void MainFrame::add_player_to_list(const std::string &name)
 {
+    _highest_player_id++;
+
     Player player;
     player.id = _highest_player_id;
     player.name = name;
@@ -108,8 +132,6 @@ void MainFrame::add_player_to_list(const std::string &name)
     player.enabled = true;
 
     _players->push_back(player);
-
-    _highest_player_id++;
 }
 
 void MainFrame::OnAbout(wxCommandEvent& event) {
@@ -260,6 +282,22 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         }
 
         // there should be valid results here
+
+        _highest_game_id++;
+        Game game;
+        game.id = _highest_game_id;
+        game.player_id_1 = player1_id;
+        game.player_id_2 = player2_id;
+        if(teams_2v2)
+        {
+            game.player_id_3 = player3_id;
+            game.player_id_4 = player4_id;
+        }
+        game.score_team_a = score_team_a;
+        game.score_team_b = score_team_b;
+        game.date_time = _data_manager->date_time();
+
+        _data_manager->save_game(game);
 
         // calculate the new ELO ratings
         // calculate difference in ELO ratings per player
