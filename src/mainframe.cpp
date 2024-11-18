@@ -297,24 +297,13 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
 
         // calculate ELO ratings
         std::vector<EloPlayer> elo_scores;
-        
-        uint elo_score_team_a = 0;
-        uint elo_score_team_b = 0;
-        if(score_team_a > score_team_b)
-        {
-            elo_score_team_a = 1;
-        }
-        else 
-        {
-            elo_score_team_b = 1;
-        }
 
         EloPlayer elo_1;
         elo_1.id = player1_id;
         elo_1.name = get_player(player1_id).name;
         elo_1.games_played = get_player(player1_id).games_played;
         elo_1.old_elo = get_player(player1_id).rating;
-        elo_1.score = elo_score_team_a;
+        elo_1.score = score_team_a;
         elo_scores.push_back(elo_1);
 
         EloPlayer elo_2;
@@ -322,7 +311,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         elo_2.name = get_player(player2_id).name;
         elo_2.games_played = get_player(player2_id).games_played;
         elo_2.old_elo = get_player(player2_id).rating;
-        elo_2.score = elo_score_team_b;
+        elo_2.score = score_team_b;
         elo_scores.push_back(elo_2);
 
         if(teams_2v2)
@@ -332,7 +321,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
             elo_3.name = get_player(player3_id).name;
             elo_3.games_played = get_player(player3_id).games_played;
             elo_3.old_elo = get_player(player3_id).rating;
-            elo_3.score = elo_score_team_a;
+            elo_3.score = score_team_a;
             elo_scores.push_back(elo_3);
 
             EloPlayer elo_4;
@@ -340,7 +329,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
             elo_4.name = get_player(player4_id).name;
             elo_4.games_played = get_player(player4_id).games_played;
             elo_4.old_elo = get_player(player4_id).rating;
-            elo_4.score = elo_score_team_b;
+            elo_4.score = score_team_b;
             elo_scores.push_back(elo_4);
         }
 
