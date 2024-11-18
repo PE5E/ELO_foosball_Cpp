@@ -19,6 +19,8 @@ struct Player
         games_played = 0;
         enabled = true;
     }
+
+    bool operator() (Player player_1,Player player_2) { return (player_1.rating > player_2.rating);} // now std::sort can compare players based on their rating
 };
 
 struct Game
