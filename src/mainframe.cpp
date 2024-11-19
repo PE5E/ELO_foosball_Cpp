@@ -72,30 +72,34 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
 
 
     // main screen
+    SetBackgroundColour(wxColour(25, 25, 25));
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->AddSpacer(10);
-    wxStaticText *ranking = new wxStaticText(this, wxID_ANY, "Ranking", wxPoint(0, 0), wxSize(-1, -1), wxALIGN_LEFT);
-    ranking->SetFont( wxFont( 14, wxDEFAULT, wxNORMAL, wxBOLD, FALSE, "", wxFONTENCODING_SYSTEM ) );
-    sizer->Add(ranking, 0, wxEXPAND | wxRIGHT | wxLEFT, 50);
     sizer->AddSpacer(10);
 
     // the table of players
     // header
     wxBoxSizer *header_sizer = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticText *header_pos = new wxStaticText(this, -1, "Position" , wxPoint(0, 0), wxSize(80, 30), wxST_NO_AUTORESIZE);
     wxStaticText *header_name = new wxStaticText(this, -1, "Name" , wxPoint(0, 0), wxSize(300, 30), wxST_NO_AUTORESIZE);
-    wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(50, 30), wxST_NO_AUTORESIZE);
+    wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(80, 30), wxST_NO_AUTORESIZE);
+    header_sizer->AddSpacer(25);
+    header_sizer->Add(header_pos);
+    header_sizer->AddSpacer(10);
     header_sizer->Add(header_name);
-    header_sizer->AddSpacer(20);
+    header_sizer->AddSpacer(10);
     header_sizer->Add(header_score);
-    sizer->Add(header_sizer, 0, wxLEFT | wxRIGHT | wxEXPAND, 50);
+    sizer->Add(header_sizer, 0, wxLEFT | wxRIGHT | wxEXPAND, 70);
 
     // player list
-    wxPanel *player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 250));
+    _player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 280), wxALL);
+    _player_panel->SetBackgroundColour(wxColour(20, 80, 20));
+
     wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
-    _player_list = new ScrollablePlayerInfo(player_panel, wxID_ANY, _players);
+    _player_list = new ScrollablePlayerInfo(_player_panel, wxID_ANY, _players);
     player_sizer->Add(_player_list, 1, wxEXPAND);
-    player_panel->SetSizer(player_sizer);
-    sizer->Add(player_panel, 0, wxLEFT | wxRIGHT | wxGROW, 50, NULL);
+    _player_panel->SetSizer(player_sizer);
+    
+    sizer->Add(_player_panel, 0, wxLEFT | wxRIGHT | wxGROW, 70, NULL);
 
     sizer->AddSpacer(20);
     auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -146,15 +150,18 @@ Player& MainFrame::get_player(uint player_id)
     return (*_players).at(0);
 }
 
-void MainFrame::OnAbout(wxCommandEvent& event) {
+void MainFrame::OnAbout(wxCommandEvent& event) 
+{
     wxMessageBox("Foosball ELO Rating program by Jaap", "About ", wxOK | wxICON_INFORMATION);
 }
 
-void MainFrame::OnExit(wxCommandEvent& event) {
+void MainFrame::OnExit(wxCommandEvent& event) 
+{
     Close(true);
 }
 
-void MainFrame::on_new_game(wxCommandEvent& event) {
+void MainFrame::on_new_game(wxCommandEvent& event) 
+{
     int player_count = _players->size() + 1; // add 1 for first entry
 
     std::vector<uint> player_ids;
@@ -173,6 +180,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
     NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids, _last_players);
 
     if(game_diag->ShowModal() == wxID_OK) {
+
         bool teams_2v2 = game_diag->get_teams_2v2();
 
         std::pair<uint, const std::string> player1 = game_diag->get_player1();
@@ -366,6 +374,7 @@ void MainFrame::on_new_game(wxCommandEvent& event) {
         // show the results
 
         ScoreDialog *score_diag = new ScoreDialog(wxT("Game Results"), _last_game_2v2, elo_scores, std::to_string(score_team_a), std::to_string(score_team_b), (score_team_a > score_team_b));
+        update_player_list();
     }
 
     delete game_diag;
@@ -385,4 +394,16 @@ void MainFrame::on_scroll_up(wxCommandEvent& event)
 void MainFrame::on_scroll_down(wxCommandEvent& event)
 {
     _player_list->Scroll(0, 100);
+}
+
+void MainFrame::update_player_list()
+{
+    _player_list->Destroy();
+    _player_panel->SetSizer(nullptr);
+
+    wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
+    _player_list = new ScrollablePlayerInfo(_player_panel, wxID_ANY, _players);
+    player_sizer->Add(_player_list, 1, wxEXPAND);
+    _player_panel->SetSizer(player_sizer);
+    _player_panel->Layout();
 }

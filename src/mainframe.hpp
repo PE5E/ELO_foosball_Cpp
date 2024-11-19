@@ -43,9 +43,14 @@ class MainFrame : public wxFrame {
         void on_scroll_down(wxCommandEvent& event);
         void on_player_menu(wxCommandEvent& event);
 
+        void update_player_list();
+
         // UI elements
         wxFlexGridSizer *score_grid;
+        wxPanel *_player_panel;
+        // wxBoxSizer *_player_sizer;
         ScrollablePlayerInfo *_player_list;
+
         int _main_width = 800;
         int _main_height = 400;
 
