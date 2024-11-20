@@ -47,10 +47,10 @@ bool EloCalculator::set_and_calculate(std::vector<EloPlayer> &players)
     // Calculate K factor based on score
     uint score_diff = (players[0].score > players[1].score) ? (players[0].score - players[1].score) : (players[1].score - players[0].score);
 
-    double player_0_factor = _k_factor * 0.1 * score_diff;
-    double player_1_factor = _k_factor * 0.1 * score_diff;
-    double player_2_factor = _k_factor * 0.1 * score_diff;
-    double player_3_factor = _k_factor * 0.1 * score_diff;
+    double player_0_factor = _k_factor * score_diff;
+    double player_1_factor = _k_factor * score_diff;
+    double player_2_factor = _k_factor * score_diff;
+    double player_3_factor = _k_factor * score_diff;
 
     // if newbie is playing, recalculate K factor for that
     bool newbie_playing = false;
