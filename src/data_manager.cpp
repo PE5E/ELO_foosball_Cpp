@@ -86,6 +86,7 @@ bool DataManager::load_players()
         int player_failed = 0;
         while(std::getline(_players_file, line)) {
             // std::cerr << "Line: " << line << std::endl;
+            if(line.empty()) continue;
 
             // skip entries starting with: # 
             if(line.at(0) == '#') 
