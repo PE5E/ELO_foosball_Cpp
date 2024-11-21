@@ -1,0 +1,4 @@
+#id,name,rating,games_played,enabled
+1,player1,1000.0,0,y
+2,player2,1000.0,0,y
+
