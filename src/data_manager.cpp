@@ -49,8 +49,7 @@ bool DataManager::set_player_file(const std::string &players_filename)
         _players_file.open(players_filename, std::ios::in | std::ios::out);
         if((_players_file.rdstate() & std::fstream::failbit) != 0)
         {
-            std::cerr << "Error opening file: " << players_filename << std::endl;
-            return false;
+            std::cerr << "Error opening file: " << players_filename << " maybe it doesn't exist yet" << std::endl;
         }
         
         std::cout << "Using players file: " << players_filename << std::endl;

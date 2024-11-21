@@ -14,6 +14,11 @@ class ScrollablePlayerInfo : public wxScrolledWindow
 public:
     ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::shared_ptr<std::vector<Player>> players) : wxScrolledWindow(parent, id)
     {
+        if((*players).size() == 0)
+        {
+            return;
+        }
+
         wxBoxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
         main_sizer->AddSpacer(5);
 
@@ -32,7 +37,7 @@ public:
 
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             uint row_height = 26;
-            wxFont font(10, wxSCRIPT, wxNORMAL, wxNORMAL);
+            wxFont font(11, wxSCRIPT, wxNORMAL, wxNORMAL);
             switch(index)
             {
                 case 0: row_height = 34;
@@ -50,10 +55,13 @@ public:
             }
             wxStaticText *player_nr = new wxStaticText(this, -1, wxString::Format(wxT("%d"), index + 1) , wxPoint(0, 0) , wxSize(80, row_height), wxST_NO_AUTORESIZE);
             player_nr->SetFont(font);
+            player_nr->SetForegroundColour(wxColour(255, 255, 255));
             wxStaticText *player_name = new wxStaticText(this, -1, player.name , wxPoint(0, 0) , wxSize(300, row_height), wxST_NO_AUTORESIZE);
             player_name->SetFont(font);
+            player_name->SetForegroundColour(wxColour(255, 255, 255));
             wxStaticText *player_score = new wxStaticText(this, -1, wxString::Format(wxT("%.0f"), player.rating), wxPoint(0, 0), wxSize(80, row_height), wxST_NO_AUTORESIZE);
             player_score->SetFont(font);
+            player_score->SetForegroundColour(wxColour(255, 255, 255));
             player_sizer->AddSpacer(25);
             player_sizer->Add(player_nr);
             player_sizer->AddSpacer(10);
