@@ -1,7 +1,5 @@
 #include "new_game_dialog.hpp"
 
-#include "mainframe.hpp" // for the IDs
-
 // https://zetcode.com/gui/wxwidgets/dialogs/
 
 using std::cout;

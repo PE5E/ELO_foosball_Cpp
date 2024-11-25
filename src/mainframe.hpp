@@ -23,6 +23,7 @@ class MainFrame : public wxFrame {
         ID_Hello = 1,
         ID_file,
         ID_new_game,
+        ID_add_player,
         ID_players,
         ID_scroll_up,
         ID_scroll_down
@@ -31,7 +32,7 @@ class MainFrame : public wxFrame {
     public:
         MainFrame();
         ~MainFrame();
-        void add_player_to_list(const std::string &name);
+        bool add_player_to_list(const std::string &name);
         Player& get_player(uint player_id);
 
     private:
@@ -41,8 +42,9 @@ class MainFrame : public wxFrame {
         void on_new_game(wxCommandEvent& event);
         void on_scroll_up(wxCommandEvent& event);
         void on_scroll_down(wxCommandEvent& event);
+        void on_add_player_menu(wxCommandEvent& event);
         void on_player_menu(wxCommandEvent& event);
-
+        
         void update_player_list();
 
         // UI elements

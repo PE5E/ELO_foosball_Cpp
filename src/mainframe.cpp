@@ -8,6 +8,7 @@
 #include "data.hpp"
 
 #include "new_game_dialog.hpp"
+#include "new_player_dialog.hpp"
 #include "player_dialog.hpp"
 #include "score_dialog.hpp"
 
@@ -15,11 +16,19 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 #include <vector>
 
 using std::cout;
 using std::cerr;
 using std::endl;
+
+// so we can use stricmp independent of OS
+#ifndef _WIN32
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#endif
+
 
 MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
     _data_manager(nullptr),
@@ -57,6 +66,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
         wxMenu *menuFile = new wxMenu;
         menuFile->Append(wxID_EXIT);
         wxMenu *menuPlayers = new wxMenu;
+        menuPlayers->Append(ID_add_player, "&Add Player", "New player");
         menuPlayers->Append(ID_players, "&Edit Players", "Players stuff");
         wxMenu *menuHelp = new wxMenu;
         menuHelp->Append(wxID_ABOUT);
@@ -69,8 +79,9 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
 
         Bind(wxEVT_MENU, &MainFrame::OnAbout, this, wxID_ABOUT);
         Bind(wxEVT_MENU, &MainFrame::OnExit, this, wxID_EXIT);
+        Bind(wxEVT_MENU, &MainFrame::on_add_player_menu, this, ID_add_player);
         Bind(wxEVT_MENU, &MainFrame::on_player_menu, this, ID_players);
-
+        
 
         // main screen
         SetBackgroundColour(wxColour(25, 25, 25));
@@ -135,8 +146,22 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
 MainFrame::~MainFrame()
 {}
 
-void MainFrame::add_player_to_list(const std::string &name)
+bool MainFrame::add_player_to_list(const std::string &name)
 {
+    if(name == "") 
+    {
+        return false;
+    }
+
+    // check if name already exists
+    for(auto player : (*_players))
+    {
+        if(stricmp(player.name.c_str(), name.c_str()) == 0 && player.enabled == true)
+        {
+            return false;
+        }
+    }
+
     _highest_player_id++;
 
     Player player;
@@ -146,6 +171,8 @@ void MainFrame::add_player_to_list(const std::string &name)
     player.enabled = true;
 
     _players->push_back(player);
+
+    return true;
 }
 
 Player& MainFrame::get_player(uint player_id)
@@ -389,9 +416,41 @@ void MainFrame::on_new_game(wxCommandEvent& event)
     delete game_diag;
 }
 
+void MainFrame::on_add_player_menu(wxCommandEvent& event)
+{
+    NewPlayerDialog *new_player_diag = new NewPlayerDialog(wxT("New Player"));
+    if(new_player_diag->ShowModal() != wxID_OK)
+    {
+        new_player_diag->Destroy();
+        return;
+    }
+
+    std::string name(new_player_diag->get_player_name().mb_str());
+    if(add_player_to_list(name))
+    {
+        std::string text = "Successfully added player: ";
+        text += name;
+        wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Player Added"), wxOK | wxICON_INFORMATION);
+        msg->ShowModal();
+        msg->Destroy();
+        _data_manager->save_players();
+    }
+    else 
+    {
+        // players name already exists
+        std::string text = "This name already exists: ";
+        text += name;
+        text += ". Please enter something else";
+        wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Error"), wxOK | wxICON_ERROR);
+        msg->ShowModal();
+        msg->Destroy();
+    }
+
+    new_player_diag->Destroy();
+}
+
 void MainFrame::on_player_menu(wxCommandEvent& event)
 {
-    cerr << "on_player_menu" << endl;
     PlayerDialog *player_diag = new PlayerDialog(wxT("Players"), _players);
 }
 
