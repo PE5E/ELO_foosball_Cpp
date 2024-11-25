@@ -81,8 +81,11 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
         // header
         wxBoxSizer *header_sizer = new wxBoxSizer(wxHORIZONTAL);
         wxStaticText *header_pos = new wxStaticText(this, -1, "Position" , wxPoint(0, 0), wxSize(80, 30), wxST_NO_AUTORESIZE);
+        header_pos->SetForegroundColour(wxColour(255, 255, 255));
         wxStaticText *header_name = new wxStaticText(this, -1, "Name" , wxPoint(0, 0), wxSize(300, 30), wxST_NO_AUTORESIZE);
+        header_name->SetForegroundColour(wxColour(255, 255, 255));
         wxStaticText *header_score = new wxStaticText(this, -1, "Rating", wxPoint(0, 0), wxSize(80, 30), wxST_NO_AUTORESIZE);
+        header_score->SetForegroundColour(wxColour(255, 255, 255));
         header_sizer->AddSpacer(25);
         header_sizer->Add(header_pos);
         header_sizer->AddSpacer(10);
@@ -92,7 +95,7 @@ MainFrame::MainFrame() : wxFrame(NULL, wxID_ANY, "Foosball ELO Rating"),
         sizer->Add(header_sizer, 0, wxLEFT | wxRIGHT | wxEXPAND, 70);
 
         // player list
-        _player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 280), wxALL);
+        _player_panel = new wxPanel(this, -1, wxPoint(0, 0), wxSize(500, 340), wxALL);
         _player_panel->SetBackgroundColour(wxColour(40, 130, 40));
 
         wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);

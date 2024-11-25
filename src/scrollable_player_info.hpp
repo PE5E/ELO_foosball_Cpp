@@ -30,14 +30,14 @@ public:
             const Player &player = _players[index];
 
             // check if player can be displayed
-            if(player.enabled == false)
+            if(player.enabled == false || player.games_played == 0)
             {
                 continue;
             }
 
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             uint row_height = 26;
-            wxFont font(11, wxSCRIPT, wxNORMAL, wxNORMAL);
+            wxFont font(11, wxDEFAULT, wxNORMAL, wxNORMAL);
             switch(index)
             {
                 case 0: row_height = 34;

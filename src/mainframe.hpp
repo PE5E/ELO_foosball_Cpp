@@ -52,7 +52,7 @@ class MainFrame : public wxFrame {
         ScrollablePlayerInfo *_player_list;
 
         int _main_width = 800;
-        int _main_height = 400;
+        int _main_height = 480;
 
         // game settings
         uint _max_score = 10; // score that one team needs to win
