@@ -36,6 +36,7 @@ class DataManager {
 
         std::string _players_header = "#id,name,rating,games_played,enabled";
         std::string _games_header = "#id,team_size,player_id_1,player_id_2,player_id_3,player_id_4,score_team_a,score_team_b,date_time";
+        bool _games_header_equal = false; // if last header in games file equals current header in use
 };
 
 

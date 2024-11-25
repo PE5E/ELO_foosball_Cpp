@@ -188,9 +188,6 @@ bool DataManager::set_games_file(const std::string &games_filename)
         std::cout << "Using games file: " << games_filename << std::endl;
 
         _games_filename = games_filename;
-
-        // write header
-        _games_file << _games_header << LINE_END;
     }
     catch(const std::exception &ex)
     {
@@ -277,8 +274,18 @@ bool DataManager::load_last_game(Game &game)
         {
             // std::cout << "Line: " << line << std::endl;
             
-            // skip entries starting with: # 
-            if(line.at(0) == '#') {
+            // entries starting with: # 
+            if(line.at(0) == '#') 
+            {
+                // check if last header in file is equal to current header
+                if (line == _games_header) 
+                {
+                    _games_header_equal = true;
+                }
+                else 
+                {
+                    _games_header_equal = false;
+                }
                 continue;
             }
 
@@ -313,7 +320,14 @@ bool DataManager::load_last_game(Game &game)
         }
 
         std::cout << "Read games succesfully: " << game_counter << std::endl;
+        std::cout << "Last games header in file equal to current: " << (_games_header_equal ? "yes" : "no") << std::endl;
         _games_file.clear(); // reset flags
+        
+        // new write header
+        if(!_games_header_equal)
+        {
+            _games_file << _games_header << LINE_END;
+        }
 
         if(game_counter == 0)
         {
