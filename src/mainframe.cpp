@@ -426,24 +426,35 @@ void MainFrame::on_add_player_menu(wxCommandEvent& event)
     }
 
     std::string name(new_player_diag->get_player_name().mb_str());
-    if(add_player_to_list(name))
+    
+    if(name == "")
     {
-        std::string text = "Successfully added player: ";
-        text += name;
-        wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Player Added"), wxOK | wxICON_INFORMATION);
-        msg->ShowModal();
-        msg->Destroy();
-        _data_manager->save_players();
-    }
-    else 
-    {
-        // players name already exists
-        std::string text = "This name already exists: ";
-        text += name;
-        text += ". Please enter something else";
+        // no name entered
+        std::string text = "Please enter a name";
         wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Error"), wxOK | wxICON_ERROR);
         msg->ShowModal();
         msg->Destroy();
+    }
+    else {
+        if(add_player_to_list(name))
+        {
+            std::string text = "Successfully added player: ";
+            text += name;
+            wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Player Added"), wxOK | wxICON_INFORMATION);
+            msg->ShowModal();
+            msg->Destroy();
+            _data_manager->save_players();
+        }
+        else 
+        {
+            // players name already exists
+            std::string text = "This name already exists: ";
+            text += name;
+            text += ". Please enter something else";
+            wxMessageDialog *msg = new wxMessageDialog(NULL, text, wxT("Error"), wxOK | wxICON_ERROR);
+            msg->ShowModal();
+            msg->Destroy();
+        }
     }
 
     new_player_diag->Destroy();
