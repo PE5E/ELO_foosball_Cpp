@@ -12,28 +12,22 @@
 class ScrollablePlayerInfo : public wxScrolledWindow
 {
 public:
-    ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::shared_ptr<std::vector<Player>> players) : wxScrolledWindow(parent, id)
+    ScrollablePlayerInfo(wxWindow* parent, wxWindowID id, const std::shared_ptr<std::vector<Player>> players) : wxScrolledWindow(parent, id),
+        _players((*players))
     {
         if((*players).size() == 0)
         {
             return;
         }
 
+        remove_empty_and_sort_players();
+
         wxBoxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
         main_sizer->AddSpacer(5);
-
-        std::vector<Player> _players((*players));
-        std::sort(_players.begin(), _players.end(), _players[0]); // sort local data based on ELO rating
         
         for (int index = 0; index != _players.size(); index++)
         {
             const Player &player = _players[index];
-
-            // check if player can be displayed
-            if(player.enabled == false || player.games_played == 0)
-            {
-                continue;
-            }
 
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             uint row_height = 26;
@@ -77,6 +71,24 @@ public:
         this->SetScrollRate(5, 5);
         this->SetSize(5000, 5000);
     }
+
+    // function that will delete all players that are not enabled or have not played any games
+    // and then sort based on ELO rating
+    void remove_empty_and_sort_players()
+    {
+        _players.erase(std::remove_if(_players.begin(), 
+                                        _players.end(),
+                                        [](Player player){return (player.enabled == false || player.games_played == 0);}),
+                                    _players.end());
+
+        std::sort(_players.begin(), _players.end(), _players[0]); // sort local data based on ELO rating
+    }
+
+private:
+    std::vector<Player> _players;
+
 };
+
+
 
 #endif // SCROLLABLE_PLAYER_INFO
