@@ -198,46 +198,30 @@ void MainFrame::OnExit(wxCommandEvent& event)
 
 void MainFrame::on_new_game(wxCommandEvent& event) 
 {
-    int player_count = _players->size() + 1; // add 1 for first entry
 
-    std::vector<uint> player_ids;
-    std::vector<wxString> player_names;
-    
-    player_ids.push_back(0);
-    player_names.push_back("-");
-
-    for(int index = 0; index != _players->size(); index++)
-    {
-        player_ids.push_back(_players->at(index).id);
-        player_names.push_back(_players->at(index).name);
-    }
 
     // create and show dialog
-    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, player_count, player_names, player_ids, _last_players);
+    NewGameDialog *game_diag = new NewGameDialog(wxT("Enter Game Details"), _last_game_2v2, _players, _last_players);
 
     if(game_diag->ShowModal() == wxID_OK) {
 
         bool teams_2v2 = game_diag->get_teams_2v2();
 
-        std::pair<uint, const std::string> player1 = game_diag->get_player1();
-        std::pair<uint, const std::string> player2 = game_diag->get_player2();
-        std::pair<uint, const std::string> player3 = game_diag->get_player3();
-        std::pair<uint, const std::string> player4 = game_diag->get_player4();
+        uint player1_id = game_diag->get_player1();
+        uint player2_id = game_diag->get_player2();
+        uint player3_id = game_diag->get_player3();
+        uint player4_id = game_diag->get_player4();
 
-        uint player1_id = player1.first;
-        uint player2_id = player2.first;
-        uint player3_id = player3.first;
-        uint player4_id = player4.first;
         uint score_team_a = game_diag->get_score_a();
         uint score_team_b = game_diag->get_score_b();
         
         cout << "Game results:" << endl;
         cout << "Game type: " << (teams_2v2 ? "2 vs 2" : "1 vs 1") << endl;
         cout << "Selected players:" << endl;
-        cout << "1. id: " << player1_id << ", name: " << player1.second << endl;
-        cout << "2. id: " << player2_id << ", name: " << player2.second << endl;
-        cout << "3. id: " << player3_id << ", name: " << player3.second << endl;
-        cout << "4. id: " << player4_id << ", name: " << player4.second << endl;
+        cout << "1. id: " << player1_id  << endl;
+        cout << "2. id: " << player2_id  << endl;
+        cout << "3. id: " << player3_id  << endl;
+        cout << "4. id: " << player4_id  << endl;
         cout << "Score Team A: " << score_team_a << endl;
         cout << "Score Team B: " << score_team_b << endl;
 
@@ -247,8 +231,6 @@ void MainFrame::on_new_game(wxCommandEvent& event)
         _last_players[1] = player2_id;
         _last_players[2] = player3_id;
         _last_players[3] = player4_id;
-
-        std::vector<std::string> player_names = {player1.second, player2.second, player3.second, player4.second};
 
 
         // check players

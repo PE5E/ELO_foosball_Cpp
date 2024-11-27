@@ -3,19 +3,22 @@
 
 #include <wx/wx.h>
 
+#include "data.hpp"
+
+#include <memory>
 #include <utility>
 #include <vector>
 
 class NewGameDialog : public wxDialog
 {
 public:
-    NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids, const uint last_player_ids[4] = {0});
+    NewGameDialog(const wxString& title, bool teams_2v2, const std::shared_ptr<std::vector<Player>> players, const uint last_player_ids[4]);
     ~NewGameDialog();
     bool get_teams_2v2();
-    std::pair<uint, const std::string> get_player1(); // returns player ID, name
-    std::pair<uint, const std::string> get_player2();
-    std::pair<uint, const std::string> get_player3();
-    std::pair<uint, const std::string> get_player4();
+    uint get_player1(); // returns player ID
+    uint get_player2();
+    uint get_player3();
+    uint get_player4();
     uint get_score_a();
     uint get_score_b();
 
@@ -53,16 +56,13 @@ private:
     uint _score_b = 0;
 
     std::vector<uint> _player_ids;
-    std::vector<wxString> _player_names;
 
     uint _player1_id = 0;
     uint _player2_id = 0;
     uint _player3_id = 0;
     uint _player4_id = 0;
-    wxString _player1_name = "";
-    wxString _player2_name = "";
-    wxString _player3_name = "";
-    wxString _player4_name = "";
+
+    std::vector<Player> _players;
 };
 
 #endif // NEW_GAME_DIALOG_HPP

@@ -1,17 +1,38 @@
 #include "new_game_dialog.hpp"
 
-// https://zetcode.com/gui/wxwidgets/dialogs/
-
 using std::cout;
 using std::cerr;
 using std::endl;
 
-NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int total_players, const std::vector<wxString> player_names, const std::vector<uint> player_ids, const uint last_player_ids[4]) : 
-    wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
+NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const std::shared_ptr<std::vector<Player>> players, const uint last_player_ids[4]) : 
+    wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)),
+    _player_ids(),
+    _players((*players))
 {
     _teams_2v2 = teams_2v2;
-    _player_names = player_names;
-    _player_ids = player_ids;
+
+    int total_players = _players.size() + 1; // add 1 for first entry
+
+    // list for combobox
+    wxString player_names_wx[total_players];
+
+    player_names_wx[0] = "-";
+    _player_ids.push_back(0);
+    
+    for(int index = 0; index != _players.size(); index++) // start at 1
+    {
+        if(_players[index].games_played < 5)
+        {
+            player_names_wx[index + 1] = wxString::Format("* %s", _players.at(index).name.c_str());
+        }
+        else
+        {
+            player_names_wx[index + 1] = _players.at(index).name;
+        }
+
+        _player_ids.push_back(_players.at(index).id);
+    }
+
 
     // find the correct entries for the last players
     uint last_player_idx_1;
@@ -19,22 +40,18 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const int to
     uint last_player_idx_3;
     uint last_player_idx_4;
 
-    for(int index = 0; index != player_ids.size(); index++)
+    for(int index = 0; index != _players.size(); index++)
     {
-        if(player_ids.at(index) == last_player_ids[0]) last_player_idx_1 = index;
-        if(player_ids.at(index) == last_player_ids[1]) last_player_idx_2 = index;
-        if(player_ids.at(index) == last_player_ids[2]) last_player_idx_3 = index;
-        if(player_ids.at(index) == last_player_ids[3]) last_player_idx_4 = index;
+        if(_players.at(index).id == last_player_ids[0]) last_player_idx_1 = _players.at(index).id;
+        if(_players.at(index).id == last_player_ids[1]) last_player_idx_2 = _players.at(index).id;
+        if(_players.at(index).id == last_player_ids[2]) last_player_idx_3 = _players.at(index).id;
+        if(_players.at(index).id == last_player_ids[3]) last_player_idx_4 = _players.at(index).id;
     }
 
     const int max_score = 10;
     const wxString numbers[11] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
-    wxString player_names_wx[total_players];
-    for(int index = 0; index != total_players; index++)
-    {
-        player_names_wx[index] = player_names[index];
-    }
+
 
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
     
@@ -135,24 +152,25 @@ bool NewGameDialog::get_teams_2v2()
 {
    return _teams_2v2;
 }
-std::pair<uint, const std::string> NewGameDialog::get_player1()
+
+uint NewGameDialog::get_player1()
 {
-    return std::pair<uint, const std::string>{_player1_id, std::string(_player1_name)};
+    return _player1_id;
 }
 
-std::pair<uint, const std::string> NewGameDialog::get_player2()
+uint NewGameDialog::get_player2()
 {
-    return std::pair<uint, const std::string>{_player2_id, std::string(_player2_name)};
+    return _player2_id;
 }
 
-std::pair<uint, const std::string> NewGameDialog::get_player3()
+uint NewGameDialog::get_player3()
 {
-    return std::pair<uint, const std::string>{_player3_id, std::string(_player3_name)};
+    return _player3_id;
 }
 
-std::pair<uint, const std::string> NewGameDialog::get_player4()
+uint NewGameDialog::get_player4()
 {
-    return std::pair<uint, const std::string>{_player4_id, std::string(_player4_name)};
+    return _player4_id;
 }
 
 uint NewGameDialog::get_score_a()
@@ -211,23 +229,19 @@ void NewGameDialog::score_input_b(wxCommandEvent &event)
 void NewGameDialog::player_input_1(wxCommandEvent &event)
 {
     _player1_id = _player_ids[_player1_box->GetSelection()];
-    _player1_name = _player_names[_player1_box->GetSelection()];
 }
 
 void NewGameDialog::player_input_2(wxCommandEvent &event)
 {
     _player2_id = _player_ids[_player2_box->GetSelection()];
-    _player2_name = _player_names[_player2_box->GetSelection()];
 }
 
 void NewGameDialog::player_input_3(wxCommandEvent &event)
 {
     _player3_id = _player_ids[_player3_box->GetSelection()];
-    _player3_name = _player_names[_player3_box->GetSelection()];
 }
 
 void NewGameDialog::player_input_4(wxCommandEvent &event)
 {
     _player4_id = _player_ids[_player4_box->GetSelection()];
-    _player4_name = _player_names[_player4_box->GetSelection()];
 }
