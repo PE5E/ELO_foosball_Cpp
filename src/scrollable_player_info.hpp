@@ -31,6 +31,13 @@ public:
 
             wxBoxSizer *player_sizer = new wxBoxSizer(wxHORIZONTAL);
             uint row_height = 26;
+            std::string name;
+            if(player.games_played < 5) // newbie
+            {
+                name = "* ";
+            }
+            name += player.name;
+
             wxFont font(11, wxDEFAULT, wxNORMAL, wxNORMAL);
             switch(index)
             {
@@ -50,7 +57,7 @@ public:
             wxStaticText *player_nr = new wxStaticText(this, -1, wxString::Format(wxT("%d"), index + 1) , wxPoint(0, 0) , wxSize(80, row_height), wxST_NO_AUTORESIZE);
             player_nr->SetFont(font);
             player_nr->SetForegroundColour(wxColour(255, 255, 255));
-            wxStaticText *player_name = new wxStaticText(this, -1, player.name , wxPoint(0, 0) , wxSize(300, row_height), wxST_NO_AUTORESIZE);
+            wxStaticText *player_name = new wxStaticText(this, -1, name , wxPoint(0, 0) , wxSize(300, row_height), wxST_NO_AUTORESIZE);
             player_name->SetFont(font);
             player_name->SetForegroundColour(wxColour(255, 255, 255));
             wxStaticText *player_score = new wxStaticText(this, -1, wxString::Format(wxT("%.0f"), player.rating), wxPoint(0, 0), wxSize(80, row_height), wxST_NO_AUTORESIZE);

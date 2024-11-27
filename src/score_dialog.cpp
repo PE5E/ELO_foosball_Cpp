@@ -34,9 +34,42 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     header_a_sizer->Add(header_a4_txt, 0);
     team_a_sizer->Add(header_a_sizer, 0);
 
+    // add a * before name of newbie
+    std::string name1;
+    if(players.at(0).games_played < 5) // newbie
+    {
+        name1 = "* ";
+    }
+    name1 += players.at(0).name;
+
+    std::string name2;
+    if(players.at(1).games_played < 5) // newbie
+    {
+        name2 = "* ";
+    }
+    name2 += players.at(1).name;
+
+    std::string name3;
+    std::string name4;
+    
+    if(teams_2v2)
+    {    
+        if(players.at(2).games_played < 5) // newbie
+        {
+            name3 = "* ";
+        }
+        name3 += players.at(2).name;
+
+        if(players.at(3).games_played < 5) // newbie
+        {
+            name4 = "* ";
+        }
+        name4 += players.at(3).name;
+    }
+
     // player 1
     wxBoxSizer *player_1_sizer = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *player_1_name = new wxStaticText(panel_a, -1, players.at(0).name, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
+    wxStaticText *player_1_name = new wxStaticText(panel_a, -1, name1, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
     player_1_sizer->AddSpacer(10);
     player_1_sizer->Add(player_1_name, 0);
     player_1_sizer->AddSpacer(10);
@@ -55,7 +88,7 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     if(teams_2v2)
     {
         wxBoxSizer *player_3_sizer = new wxBoxSizer(wxHORIZONTAL);
-        wxStaticText *player_3_name = new wxStaticText(panel_a, -1, players.at(2).name, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
+        wxStaticText *player_3_name = new wxStaticText(panel_a, -1, name3, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
         player_3_sizer->AddSpacer(10);
         player_3_sizer->Add(player_3_name, 0);
         player_3_sizer->AddSpacer(10);
@@ -105,7 +138,7 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
 
     // player 2
     wxBoxSizer *player_2_sizer = new wxBoxSizer(wxHORIZONTAL);
-    wxStaticText *player_2_name = new wxStaticText(panel_b, -1, players.at(1).name, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
+    wxStaticText *player_2_name = new wxStaticText(panel_b, -1, name2, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
     player_2_sizer->AddSpacer(10);
     player_2_sizer->Add(player_2_name, 0);
     player_2_sizer->AddSpacer(10);
@@ -124,7 +157,7 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     if(teams_2v2)
     {
         wxBoxSizer *player_4_sizer = new wxBoxSizer(wxHORIZONTAL);
-        wxStaticText *player_4_name = new wxStaticText(panel_b, -1, players.at(3).name, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
+        wxStaticText *player_4_name = new wxStaticText(panel_b, -1, name4, wxPoint(0, 0), wxSize(100, 30), wxST_NO_AUTORESIZE);
         player_4_sizer->AddSpacer(10);
         player_4_sizer->Add(player_4_name, 0);
         player_4_sizer->AddSpacer(10);
