@@ -13,6 +13,7 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     
     // Team A
     wxPanel *panel_a = new wxPanel(this, -1);
+    panel_a->SetBackgroundColour(wxColour(160, 40, 40));
     wxStaticBox *st_a = new wxStaticBox(panel_a, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 230));
 
     wxBoxSizer *team_a_sizer = new wxBoxSizer(wxVERTICAL);
@@ -115,6 +116,7 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
 
     // Team B
     wxPanel *panel_b = new wxPanel(this, -1);
+    panel_b->SetBackgroundColour(wxColour(20, 20, 160));
     wxStaticBox *st_b = new wxStaticBox(panel_b, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 230));
 
     wxBoxSizer *team_b_sizer = new wxBoxSizer(wxVERTICAL);
