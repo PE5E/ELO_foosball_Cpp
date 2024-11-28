@@ -385,6 +385,7 @@ void MainFrame::on_new_game(wxCommandEvent& event)
         }
         game.score_team_a = score_team_a;
         game.score_team_b = score_team_b;
+        game.teams_2v2 = teams_2v2;
         game.date_time = _data_manager->date_time();
 
         _data_manager->save_game(game);
