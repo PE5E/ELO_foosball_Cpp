@@ -13,6 +13,7 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const std::s
 
     wxColour color_team_a = wxColour(160, 40, 40);
     wxColour color_team_b = wxColour(20, 20, 160);
+	wxColour color_text = wxColour(255, 255, 255);
 
 
     int total_players = _players.size() + 1; // add 1 for first entry
@@ -77,26 +78,34 @@ NewGameDialog::NewGameDialog(const wxString& title, bool teams_2v2, const std::s
 
     wxPanel *panel2 = new wxPanel(this, -1);
     panel2->SetBackgroundColour(color_team_a);
+	panel2->SetForegroundColour(color_text);
     wxStaticBox *st2 = new wxStaticBox(panel2, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 200));
         
     _player1_box = new wxComboBox(panel2, ID_PLAYER_1, "Player 1", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player1");
     _player1_box->SetBackgroundColour(color_team_a);
+	_player1_box->SetForegroundColour(color_text);
     _player3_box = new wxComboBox(panel2, ID_PLAYER_3, "Player 3", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player3");
     _player3_box->SetBackgroundColour(color_team_a);
+	_player3_box->SetForegroundColour(color_text);
     _teamA = new wxComboBox(panel2, ID_TEAM_A, "Score Team A", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team A");
     _teamA->SetBackgroundColour(color_team_a);
+	_teamA->SetForegroundColour(color_text);
     _teamA->SetSelection(0);
     
     wxPanel *panel3 = new wxPanel(this, -1);
     panel3->SetBackgroundColour(color_team_b);
+	panel3->SetForegroundColour(color_text);
     wxStaticBox *st3 = new wxStaticBox(panel3, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 200));
     
     _player2_box = new wxComboBox(panel3, ID_PLAYER_2, "Player 2", wxPoint(25, 30), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player2");
     _player2_box->SetBackgroundColour(color_team_b);
+	_player2_box->SetForegroundColour(color_text);
     _player4_box = new wxComboBox(panel3, ID_PLAYER_4, "Player 4", wxPoint(25, 80), wxSize(260, 30), total_players, player_names_wx, wxCB_READONLY, wxDefaultValidator, "player4");
     _player4_box->SetBackgroundColour(color_team_b);
+	_player4_box->SetForegroundColour(color_text);
     _teamB = new wxComboBox(panel3, ID_TEAM_B, "Score Team B", wxPoint(115, 150), wxSize(80, 40), (max_score + 1), numbers, wxCB_READONLY, wxDefaultValidator, "Score Team B");
     _teamB->SetBackgroundColour(color_team_b);
+	_teamB->SetForegroundColour(color_text);
     _teamB->SetSelection(0);
 
     _player1_box->SetSelection(last_player_idx_1);

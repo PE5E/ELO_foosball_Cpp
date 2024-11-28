@@ -10,10 +10,15 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
     wxDialog(NULL, -1, title, wxDefaultPosition, wxSize(700, 400)) 
 {
     wxBoxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	
+	wxColour color_team_a = wxColour(160, 40, 40);
+    wxColour color_team_b = wxColour(20, 20, 160);
+	wxColour color_text = wxColour(255, 255, 255);
     
     // Team A
     wxPanel *panel_a = new wxPanel(this, -1);
-    panel_a->SetBackgroundColour(wxColour(160, 40, 40));
+    panel_a->SetBackgroundColour(color_team_a);
+	panel_a->SetForegroundColour(color_text);
     wxStaticBox *st_a = new wxStaticBox(panel_a, -1, wxT("Team A"), wxPoint(0, 0), wxSize(310, 230));
 
     wxBoxSizer *team_a_sizer = new wxBoxSizer(wxVERTICAL);
@@ -116,7 +121,8 @@ ScoreDialog::ScoreDialog(const wxString& title, bool teams_2v2, const std::vecto
 
     // Team B
     wxPanel *panel_b = new wxPanel(this, -1);
-    panel_b->SetBackgroundColour(wxColour(20, 20, 160));
+    panel_b->SetBackgroundColour(color_team_b);
+	panel_b->SetForegroundColour(color_text);
     wxStaticBox *st_b = new wxStaticBox(panel_b, -1, wxT("Team B"), wxPoint(0, 0), wxSize(310, 230));
 
     wxBoxSizer *team_b_sizer = new wxBoxSizer(wxVERTICAL);
