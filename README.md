@@ -14,6 +14,7 @@ C++ 17
 CMake 3.10  
 
 The program is based on wxWidgets for the UI. So before building it, make sure wxWidgets is installed. Linux is tested. Windows untested, but should work also.  
+The program is made for a small screen (800 x 480). Bigger screen can also be used, but might need some work to get a better view.
 
 
 
