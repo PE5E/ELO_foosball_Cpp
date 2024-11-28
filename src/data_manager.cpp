@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <filesystem>
 
 DataManager::DataManager() :
     _players_file(),
@@ -44,6 +45,13 @@ bool DataManager::set_player_file(const std::string &players_filename)
             {
                 _players_file.close();
             }
+        }
+
+        // create the file if it doesn't exist
+        if(!std::filesystem::exists(players_filename))
+        {
+            _players_file.open(players_filename, std::ios::out | std::ios::app);
+            _players_file.close();
         }
 
         _players_file.open(players_filename, std::ios::in | std::ios::out);
