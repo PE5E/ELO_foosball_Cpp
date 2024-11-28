@@ -232,6 +232,7 @@ bool DataManager::save_game(const Game &game)
         sprintf(line, "%u,%c,%u,%u,%u,%u,%u,%u,%s", game.id, (game.teams_2v2 ? '2' : '1'), game.player_id_1, game.player_id_2, game.player_id_3,
             game.player_id_4, game.score_team_a, game.score_team_b, game.date_time.c_str());
         _games_file << line << LINE_END;
+        _games_file.flush();
         std::cout << "Write to game file: " << std::endl;
         std::cout << line << std::endl;
 
